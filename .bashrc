@@ -5,6 +5,9 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# Constants
+HELPER_TOOLS=~/opt/misc_helpers
+
 # Some interesting unicode characters
 # Ϊ λ ❯ ❮ ♺ ✚ ⬆ ⬇ ✖ ✱ ➜ ✭ ◼
 
@@ -14,40 +17,25 @@ fi
 #source ${PERLBREW_ROOT}/etc/bashrc
 
 # Add bin paths - order matters! ;)
-#export PATH=/mnt/NGS01/biss/bin:${PATH}
-export PATH=/mnt/ngs/biss/bin:${PATH}
+source ~/.bashrc.local.paths
 export PATH=${HOME}/bin:${PATH}
 
 # Add git autocompletion
 #source /mnt/NGS01/biss/opt/recommended_configs/git-completion.bash
 
 # Add git flow autocompletion
-source /mnt/ngs/biss/opt/git-flow-completion-1.1.0/git-flow-completion.bash
+source ${HELPER_TOOLS}/git-flow-completion.bash
 
 # Use python virtual environments
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 # Following is for python 2.7 (where we use virtualenvwrapper)
 export WORKON_HOME=~/.venv
 #VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python2.7'
-source /mnt/ngs/biss/bin/virtualenvwrapper.sh
+#source /mnt/ngs/biss/bin/virtualenvwrapper.sh
 # For python 3.4+ we use pyvenv (installed systemwide)
 
 # User specific aliases and functions
 alias l='ls'
-
-# Minimal prompt with current directory
-#PS1="\[\033[1;34m\]\W \[\033[1;32m\]$ \[\033[m\]"
-
-# + Date and time in prompt
-#PS1="\[\033[1;30m\](\D{%a %d %b %H:%M}) 
-#\[\033[1;34m\]\W \[\033[1;32m\]$ \[\033[m\]"
-
-# + git branch and status
-#export GIT_PS1_SHOWDIRTYSTATE=1
-#source /mnt/NGS01/biss/opt/recommended_configs/git-prompt.sh
-#source /mnt/NGS01/biss/opt/recommended_configs/git_prompt_custom.bash
-#PS1="\[\033[1;30m\](\D{%a %d %b %H:%M}) \[\033[1;92m\]\$(gitify) 
-#\[\033[1;34m\]\W \[\033[1;32m\]$ \[\033[m\]"
 
 ###
 ### Functions
@@ -61,7 +49,6 @@ git-branch-name()
 git-dirty()
 {
     st=$(git status 2>/dev/null | tail -n 1)
-    #if [[ $st != "nothing to commit (working directory clean)" ]]
     if [[ ! $st =~ "working directory clean" ]]
     then
         echo "*"
@@ -115,8 +102,6 @@ getgitstat()
     MY_GIT_STAT=$(gitify)
     if test -z "$MY_GIT_STAT" ; then
         echo ""
-    #elif [[ "$MY_GIT_STAT" != "${MY_GIT_STAT/ /}" ]]; then
-    #    echo " (git:DETACHED HEAD)"
     else
         echo " (git:${MY_GIT_STAT})"
     fi

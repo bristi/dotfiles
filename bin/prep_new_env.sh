@@ -2,10 +2,13 @@
 
 # TODO: Option to build folder after installation
 # TODO: Ask before installation
-# TODO:
+
+# Install folder for helper tools
+HELPER_TOOLS_DIR=~/opt/misc_helpers
 
 # Init bin and build folders
 mkdir -p ~/bin
+mkdir -p ${HELPER_TOOLS_DIR}
 mkdir -p ~/build/prep_env
 cd ~/build/prep_env
 
@@ -34,8 +37,12 @@ curl http://beyondgrep.com/ack-2.14-single-file > ~/bin/ack && chmod 0755 ~/bin/
 echo "## INSTALLING : vim-plug"
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+# Install vim-plug
+echo "## INSTALLING : git-flow-completion.bash"
+curl -fLo ${HELPER_TOOLS_DIR}/git-flow-completion.bash https://raw.githubusercontent.com/bobthecow/git-flow-completion/master/git-flow-completion.bash
+
 ###
-### Utilities in vcs repositories
+### Utilities where we create git repositories
 ###
 
 # Install powerline fonts
@@ -54,6 +61,10 @@ cmake .
 make
 cp tmux-mem-cpu-load ~/bin/
 cd ..
+
+# Install autoenv
+echo "## INSTALLING : autoenv"
+git clone git://github.com/kennethreitz/autoenv.git ~/.autoenv
 
 ###
 ### Initializations
