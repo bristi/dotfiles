@@ -30,6 +30,10 @@ rm -Rf ctags-5.8 ctags-5.8.tar.gz
 echo "## INSTALLING : ack"
 curl http://beyondgrep.com/ack-2.14-single-file > ~/bin/ack && chmod 0755 ~/bin/ack
 
+# Install vim-plug
+echo "## INSTALLING : vim-plug"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 ###
 ### Utilities in vcs repositories
 ###
@@ -51,5 +55,12 @@ make
 cp tmux-mem-cpu-load ~/bin/
 cd ..
 
+###
+### Initializations
+###
+
+# Initializing vim
+echo "## INITIALIZING : vim"
+vim +PlugInstall +qall
 
 

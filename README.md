@@ -15,7 +15,7 @@ TODOS:
 
 ### Shameless copy-paste of yadm documentation per 20161111
 
-This section is a copy-paste of [https://thelocehiliosan.github.io/yadm/docs/alternates](the yadm documentation).
+This section is a partial copy-paste of [https://thelocehiliosan.github.io/yadm/docs/alternates].
 
 Strategies for alternate files on different systems
 
