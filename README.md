@@ -4,11 +4,11 @@ My dotfiles, as well as some general purpose scripts (in `~/bin`), is managed us
 
 TODOS:
 
-[ ] Add some pre-history, mentioning deleting of old repo
-[ ] Copy/link to some usage of yadm
-[x] Copy/link to general best practice of using alternate files
-[ ] Add basic dotfiles and scripts
-[ ] Merge other configurations
+- [ ] Add some pre-history, mentioning deleting of old repo
+- [ ] Copy/link to some usage of yadm
+- [x] Copy/link to general best practice of using alternate files
+- [ ] Add basic dotfiles and scripts
+- [ ] Merge other configurations
 
 
 ## Using alternate files
