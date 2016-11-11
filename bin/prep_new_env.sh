@@ -63,4 +63,13 @@ cd ..
 echo "## INITIALIZING : vim"
 vim +PlugInstall +qall
 
+# Initializing yadm
+echo "## INITIALIZING : yadm"
+# Apparently yadm does not use (all) my git settings?
+# For the git installation on the current system this results in the error
+#   fatal: The current branch master has multiple upstream branches, refusing to push.
+# every time I do a yadm push. `yadm push -u origin master` works of course.
+# Telling yadm (git) to only push current branch is a fix for this system.
+yadm config push.default simple
+
 
