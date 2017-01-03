@@ -10,6 +10,9 @@ TODOS:
 - [ ] Add basic dotfiles and scripts
 - [ ] Merge other configurations
 
+## Some notes to be deleted
+
+* Consider [example gitconfig](https://gist.github.com/pksunkara/988716)
 
 ## Using alternate files
 

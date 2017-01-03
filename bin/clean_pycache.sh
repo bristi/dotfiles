@@ -67,10 +67,10 @@ echo "$CONFIRM_STRING"
 read -p "Press any key to continue or CTRL-C to cancel now.."
 
 # Clean __pycache__
-find $START_DIR -type d -name "__pycache__" -printf "%p\n" | xargs rm -rf
+find $START_DIR -type d -name "__pycache__" -print0 | xargs -0 -r rm -rf
 
 # Clean .pyc
 if $CLEAN_FILE_OBJECTS; then
-    find $START_DIR -type f -name "*.pyc" -printf "%p\n" | xargs rm
+    find $START_DIR -type f -name "*.pyc" -print0 | xargs -0 -r rm
 fi
 
