@@ -1,3 +1,4 @@
+# Get more inspiration : https://gist.github.com/pksunkara/988716
 [core]
   autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space

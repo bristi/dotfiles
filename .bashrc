@@ -1,5 +1,9 @@
 # .bashrc
 
+# Diagnose what happens during bash startup and beyond (loads of output)
+# Normally suggested to put in .bash_login ?
+#set -x
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc

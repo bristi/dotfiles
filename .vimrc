@@ -606,6 +606,13 @@ command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
     \ | wincmd p | diffthis
 nnoremap <Leader>dd :DiffOrig<CR>
 
+""" Command to generate todo list
+" Using vimgrep
+"command Todo noautocmd vimgrep /TODO\|FIXME\|BUG\|TBD/j ** | cw
+" Requires ack-vim
+command Todo Ack! '(TODO)|(FIXME)|(BUG)|(TBD)'
+nnoremap <Leader>td :Todo<CR>
+
 " Edit a file in the same directory as the current buffer.
 " This leaves the prompt open, allowing Tab expansion or manual completion.
 "map <leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
@@ -647,10 +654,26 @@ nmap ,cd :cd %:p:h<CR>:pwd<CR>
 " http://vim.wikia.com/wiki/Display_line_numbers
 nmap ,ln :set invnumber<CR>
 
-" cnext,cprev - forward,backward in error list
+" cnext,cprev - forward,backward in quickfix/error list
 "   vimwiki search uses error list
 nmap <C-Right> :cnext<CR>
 nmap <C-Left> :cprev<CR>
+
+"" Next/previous item and open/close quickfix
+" cn   Next item
+" cp   Previous item
+" copen/cope  Open quickfix list
+" cclose/ccl  Close quickfix list
+"
+"" Create custom quickfix list
+" cex {expr}    Create quickfix list from expr and jump to first item
+" cgete {expr}  Create quickfix list from expr (and don't jump)
+" expr examples: 
+"   :cexpr system('grep -n xyz *')
+"   :cexpr getline(1, '$')
+"
+" Location lists are local to windows and are independent of quickfix lists.
+" Shortcuts are similar but 'c' prefix is replaced with 'l' prefix
 
 " }
 
@@ -686,7 +709,7 @@ EOF
 au BufNewFile,BufRead *.js, *.html, *.css
     \ set tabstop=2          |
     \ set softtabstop=2      |
-    \ set shiftwidth=2       |
+    \ set shiftwidth=2
 " }
 
 " notes {
@@ -698,7 +721,7 @@ au BufNewFile,BufRead *.rst, *.txt
     \ set textwidth=79       |
     \ set expandtab          |
     \ set autoindent         |
-    \ set fileformat=unix    |
+    \ set fileformat=unix
 
 " }
 
@@ -954,7 +977,7 @@ nnoremap ,to :TagbarOpen fj<CR>
 
 " ack {
 
-"" Shortcut keys from quickfix results window
+"" Provides following quickfix/error list shortcuts
 " ?    a quick summary of these keys, repeat to close
 " o    to open (same as Enter)
 " O    to open and close the quickfix window
@@ -966,7 +989,6 @@ nnoremap ,to :TagbarOpen fj<CR>
 " v    to open in vertical split
 " gv   to open in vertical split, keeping focus on the results
 " q    to close the quickfix window
-
 
 " Use ag (the silver searcher) if available
 if executable('ag')
