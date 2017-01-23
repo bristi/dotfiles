@@ -995,6 +995,15 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
+" Highlight search term
+let g:ackhighlight = 1
+
+" Fold results in quickfix by file name
+" Note: Enabling this seems to influence (annoyingly!) how ALL folds work??!
+let g:ack_autofold_results = 0
+
+
+
 " }
 
 " Powerline {
