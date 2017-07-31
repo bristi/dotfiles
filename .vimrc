@@ -183,7 +183,7 @@
     Plug 'scrooloose/syntastic'
 
     " Fuzzy matching
-    Plug 'FuzzyFinder' | Plug 'L9'
+    Plug 'vim-scripts/FuzzyFinder' | Plug 'vim-scripts/L9'
     "Plug 'ctrlpvim/ctrlp.vim'
 
     Plug 'majutsushi/tagbar'
@@ -229,22 +229,22 @@
   " }
 
   " Ordered text files {
-    Plug 'csv.vim', { 'for': 'csv' }
+    Plug 'vim-scripts/csv.vim', { 'for': 'csv' }
     Plug 'elzr/vim-json'
   " }
 
   " Perl {
-    "Plug 'perl-support.vim'
+    "Plug 'vim-scripts/perl-support.vim'
   " }
 
   " c/c++ {
-    "Plug 'c.vim'
+    "Plug 'vim-scripts/c.vim'
   " }
 
   " LaTeX {
-    "Plug 'LaTeX-Box'
-    "Plug 'TeX-9'
-    "Plug 'AutomaticTexPlugin'
+    "Plug 'vim-scripts/LaTeX-Box'
+    "Plug 'vim-scripts/TeX-9'
+    "Plug 'vim-scripts/AutomaticTexPlugin'
   " }
 
   " Python {
@@ -289,7 +289,7 @@
   " }
 
   " Ruby {
-    Plug 'rails.vim'
+    Plug 'vim-scripts/rails.vim'
   " }
   " R {
     "Plug 'vim-scripts/vim-R-plugin.git', {'for': 'r'}
@@ -694,14 +694,14 @@ au BufNewFile,BufRead *.py
     \ set fileformat=unix
 
 "python with virtualenv support
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
 
 " }
 

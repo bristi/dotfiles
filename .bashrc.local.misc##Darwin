@@ -1,0 +1,62 @@
+###
+### OSX specific
+###
+
+# Use this for seeing if we are on OSX?
+#if [[ "$OSTYPE" == darwin* ]]; then
+#  export BROWSER='open'
+#
+#  # Turn off special handling of ._* files in tar, etc.
+#  # http://superuser.com/questions/259703/get-mac-tar-to-stop-putting-filenames-in-tar-archives:
+#  # prevent several of the system-supplied programs (including tar) from giving
+#  # special meaning to ._* archive members. In particular, it will prevent them
+#  # from:
+#  #
+#  # * storing extended attribute data (including resource forks) in ._* archive
+#  #   members (i.e. do not “pollute” archives created on Mac OS X but meant for
+#  #   use on other systems)
+#  # * attempting to extract extended attributes orresources from archive
+#  #   members named like ._* (i.e. do not misinterpret ._* archive members
+#  #   in archives from other systems).
+#
+#  # The value you use for the environment variable is not important (it can even be the empty string). Values like 0, and false will not reenable the feature. The only thing that matters is whether the variable is set (you have to “unset” it to reenable the feature).
+#  # When you need to, you can then unset the variable for individual commands:
+#  # (unset COPYFILE_DISABLE; tar cf somefile.tar …)
+#  # On this Mac OS X 10.6 system, the following commands all seem to know about COPYFILE_DISABLE:
+#  #
+#  # /usr/bin/tar (a symbolic link to bsdtar)
+#  # /usr/bin/bsdtar
+#  # /usr/bin/gnutar
+#  # /bin/pax
+#  #
+#  # COPYFILE_DISABLE originated in Mac OS X 10.5. If you need to support 10.4, it has COPY_EXTENDED_ATTRIBUTES_DISABLE that works in the same way.
+#  #
+#  COPYFILE_DISABLE=1; export COPYFILE_DISABLE
+#fi
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+
+# Clean up LaunchServices to remove duplicates in the “Open With”
+# menu. Could also use (free) app Onyx
+# http://apple.stackexchange.com/questions/68596/why-does-my-macs-list-of-open-with-applications-start-listing-the-apps-twice
+# http://www.titanium.free.fr/ (Onyx)
+alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+# or?
+#/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user
+
+# Set github api token for homebrew
+#export HOMEBREW_GITHUB_API_TOKEN=d1bed1cc58084971fa48a0cc4d8efde64da5d489
+# Changed?
+export HOMEBREW_GITHUB_API_TOKEN=d3ae385b44eb02bc0c868cf56ca170709312a6ed
+
+# pyenv
+# To use Homebrew's directories rather than ~/.pyenv add to your profile:
+#export PYENV_ROOT=/usr/local/var/pyenv
+# To enable shims and autocompletion add to your profile:
+#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+
+# I want to use macvim on console as well
+#alias vim='mvim -v'
+#alias vimdiff='mvimdiff -v'
+
+

@@ -9,7 +9,72 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-# Constants
+# Source global bash completions
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+else
+    for file in /etc/bash_completion.d/* ; do
+        source "$file"
+    done
+fi
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+#if ! shopt -oq posix; then
+#  if [ -f /usr/share/bash-completion/bash_completion ]; then
+#    . /usr/share/bash-completion/bash_completion
+#  elif [ -f /etc/bash_completion ]; then
+#    . /etc/bash_completion
+#  fi
+#fi
+
+###
+### Constants and general settings
+###
+
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+###
+### General settings
+###
+
+# preference settings
+export EDITOR=vim
+export PAGER=less
+export GIT_EDITOR=vim
+export GIT_PAGER=less
+
+# X forwarded and faster, more compressed ssh (marginally..)
+#alias sshplain='/usr/bin/ssh'
+#alias ssh='ssh -XC4c arcfour,blowfish-cbc'
+
+# make less more friendly for non-text input files, see lesspipe(1)
+#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+###
+### Application specific settings
+###
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Custom helper tools
 HELPER_TOOLS=~/opt/misc_helpers
 
 # Some interesting unicode characters
@@ -22,7 +87,11 @@ HELPER_TOOLS=~/opt/misc_helpers
 
 # Add bin paths - order matters! ;)
 source ~/.bashrc.local.paths
-export PATH=${HOME}/bin:${PATH}
+#export PATH=${HOME}/bin:${PATH}
+# added by Anaconda3 4.4.0 installer
+#export PATH="/home/brian/.anaconda3/bin:$PATH"
+path_prepend ${HOME}/.anaconda3/bin
+path_prepend ${HOME}/bin
 
 # Add git autocompletion
 #source /mnt/NGS01/biss/opt/recommended_configs/git-completion.bash
@@ -30,17 +99,133 @@ export PATH=${HOME}/bin:${PATH}
 # Add git flow autocompletion
 source ${HELPER_TOOLS}/git-flow-completion.bash
 
-# Use python virtual environments
+###
+### Use python virtual environments
+###
+
+# We don't want virtualenv or pyvenv to set our prompt
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-# Following is for python 2.7 (where we use virtualenvwrapper)
-export WORKON_HOME=~/.venv
+# To prevent (ana)conda from setting our prompt run command:
+#   conda config --set changeps1 no
+# Or set following in .condarc
+#   changeps1: False
+
+# Settings for virtualenvwrapper
+#export WORKON_HOME=~/.venvs
 #VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python2.7'
-#source /mnt/ngs/biss/bin/virtualenvwrapper.sh
-# For python 3.4+ we use pyvenv (installed systemwide)
 
-# User specific aliases and functions
-alias l='ls'
+# Conda environments (default) location(s). Can also use 'envs_dirs' option
+# in .condarc
+export CONDA_ENVS_PATH=~/.condaenvs
 
+# Conda bash autocompletion
+# Requires `conda install argcomplete`
+# Note: Unsupported and phased out at python 3.6
+#eval "$(register-python-argcomplete conda)"
+
+# Toggle / remove conda from PATH
+# This is necessary when we want to use system/brew python
+
+# Get this some other, more agnostic, way..
+#CONDAPATH=/usr/local/anaconda3/bin
+CONDAPATH=$(grep -oE [^:][a-zA-Z0-9\./]+conda[2-3]/bin <<< "$PATH")
+# Var to keep tmp path while toggling
+CONDA_TOGGLE_PATH=''
+
+# Saves current PATH in CONDA_TOGGLE_PATH and removes anaconda from current PATH
+# if CONDA_TOGGLE_PATH is empty. Otherwise restores(!) PATH from CONDA_TOGGLE_PATH.
+toggle_conda () {
+    if [ -z $CONDA_TOGGLE_PATH ]; then
+        export CONDA_TOGGLE_PATH=$PATH
+        path_remove $CONDAPATH
+    else
+        # TODO: Insert check here for whether PATH has changed further
+        export PATH=$CONDA_TOGGLE_PATH
+        export CONDA_TOGGLE_PATH=''
+    fi
+}
+
+path_no_conda () {
+    echo "$(remove_item_from_pathlike $CONDAPATH $PATH)"
+}
+
+###
+### User specific aliases and functions
+###
+
+# ls color + aliases
+if [ "$TERM" != "dumb" ]; then
+    #eval "`dircolors -b`"
+    alias ls='ls --group-directories-first --color=auto'
+    alias la='ls -A'
+    alias ll='ls -l'
+    alias l='ls -CF --group-directories-first --color=auto'
+    # An alias to always send color ANSI codes
+    # Note that a pipe is not always a good place to send ANSI codes but if
+    # something like less -R is receiving it might be preferable..
+    alias lc='ls --group-directories-first --color=always'
+fi
+
+# make less display color
+# Note: doing it as alias doesn't work when less is used from eg ipython (with help)
+alias less='less -R'
+export LESS="-R"
+
+# grep color
+alias grep='grep --color=auto'
+alias grepc='grep --color=always'       # analogous to lc
+# Following is the way I used to do it
+#export GREP_OPTIONS='--color=auto'
+
+# diff color - requires program colordiff
+#alias diff='colordiff'
+
+# I usually sort data with . as decimal separator..
+# Consider setting these globally instead.
+#alias sort='LC_NUMERIC="en_US.UTF8" LC_TIME="en_US.UTF8" sort'
+
+# For terminals like mate-terminal this was necessary
+alias tmux='TERM=xterm-256color tmux'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# stuff
+alias zzz='sleep 10'
+
+###
+### Miscelaneous settings
+###
+
+source ${HOME}/.bashrc.local.misc
+
+###
+### locale settings
+###
+
+if [[ -z "$LANG" ]]; then
+  export LANG='en_US.UTF-8'
+fi
+
+#export LANG=en_DK.UTF8
+#export LC_CTYPE=en_US.UTF8
+#export LC_ALL=en_US
+## testing...
+#export LANG=en_DK.UTF-8
+#export LC_CTYPE="en_US.UTF-8"
+#export LC_NUMERIC="en_DK.UTF-8"
+#export LC_TIME="en_DK.UTF-8"
+#export LC_COLLATE="en_DK.UTF-8"
+#export LC_MONETARY="en_DK.UTF-8"
+#export LC_MESSAGES="en_DK.UTF-8"
+#export LC_PAPER="en_DK.UTF-8"
+#export LC_NAME="en_DK.UTF-8"
+#export LC_ADDRESS="en_DK.UTF-8"
+#export LC_TELEPHONE="en_DK.UTF-8"
+#export LC_MEASUREMENT="en_DK.UTF-8"
+#export LC_IDENTIFICATION="en_DK.UTF-8"
+#export LC_ALL=en_DK.UTF-8
 ###
 ### Functions
 ###
@@ -53,8 +238,8 @@ git-branch-name()
 git-dirty()
 {
     st=$(git status 2>/dev/null | tail -n 1)
-    if [[ ! $st =~ "working directory clean" ]]
-    then
+    #if [[ $st != "nothing to commit (working directory clean)" ]]
+    if [[ ! $st =~ "working "[[:alpha:]]+" clean" ]]; then
         echo "*"
     fi
 }
@@ -79,8 +264,9 @@ git-behind()
 
 gitify()
 {
-    status=$(git status 2>/dev/null | tail -n 1)
-    if [[ $status == "" ]]; then
+    #status=$(git status 2>/dev/null | tail -n 1)
+    status=$(git status 1>/dev/null 2>/dev/null ; echo "$?")
+    if [[ ! $status == "0" ]]; then
         echo ""
     else
         status2=$(git status 2>/dev/null | head -1)
@@ -94,10 +280,15 @@ gitify()
 
 getpyvenv()
 {
-    if test -z "$VIRTUAL_ENV" ; then
-        echo ""
-    else
+    if test -n "$VIRTUAL_ENV" ; then
         echo " (pyenv:`basename \"$VIRTUAL_ENV\"`)"
+    # Which of these conda envs is correct?
+    elif test -n "$CONDA_DEFAULT_ENV" ; then
+        echo " (pyenv:`basename \"$CONDA_DEFAULT_ENV\"`)"
+    elif test -n "$CONDA_PREFIX" ; then
+        echo " (pyenv:`basename \"$CONDA_PREFIX\"`)"
+    else
+        echo ""
     fi
 }
 
