@@ -29,6 +29,9 @@ fi
 #  fi
 #fi
 
+# Source custom functionality
+source ${HOME}/.bashrc_functionality
+
 ###
 ### Constants and general settings
 ###
@@ -397,6 +400,6 @@ ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 # $ git clone git://github.com/kennethreitz/autoenv.git ~/.autoenv
 # CAVEAT This must be sourced after setting prompt as otherwise pyvenv will not have
 # the correct _OLD_VIRTUAL_PS1 environment variable to reset prompt to.
-source ${HOME}/.autoenv/activate.sh
+#source ${HOME}/.autoenv/activate.sh
 
 
