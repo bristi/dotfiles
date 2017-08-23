@@ -15,16 +15,22 @@
   #df = diff
   g = grep -I
   lg = log -p
-  lol = log --graph --decorate --pretty=oneline --abbrev-commit
-  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  #lol = log --graph --decorate --pretty=oneline --abbrev-commit
+  #lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  lol = log --graph --pretty=onelinec --date=short
+  lola = log --graph --pretty=onelinec --date=short --all
+  lols = log --graph --pretty=threeline --date=short
+  lolsa = log --graph --pretty=threeline --date=short --all
+  lolol = log --graph --decorate --pretty=full --abbrev-commit
+  lolola = log --graph --decorate --pretty=full --abbrev-commit --all
   ls = ls-files
   unadd = rm --cached --
   unstage = reset HEAD --
   d = difftool
-  #pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
+  pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
   #rb = rbranch
   #rv = review
-  #st = status
+  st = status
 [color]
   ui = auto
   #diff = auto
@@ -54,3 +60,17 @@
   default = simple
 [include]
   path = .gitconfig.local
+[pretty]
+  # colors are at least: normal, black, red, green, yellow, blue, magenta, cyan, white
+  # attributes: bold, dim, ul, blink, reverse
+  # eg %C(bold yellow)
+  # Note that to get default color output for placeholder, eg differentiated colors for %d, use %C(auto)
+  #
+  # One line, with short hash, gpg, date, author and subject
+  onelineg = format:%C(auto,yellow)%h %C(auto,magenta)%G? %C(auto,blue)%>(12,trunc)%ad %C(auto,cyan)%<(7,trunc)%aN%C(auto,reset)%s%C(auto)%d
+  # One line, with short hash, rel date, author and subject
+  onelinec = format:%C(auto,yellow)%h %C(auto,blue)%>(12,trunc)%ar %C(auto,cyan)%<(7,trunc)%aN%C(auto,reset)%s%C(auto)%d
+  # Two lines, with 1: short hash, subject + 2: date, rel date, author
+  #twoline = format:%C(yellow)%h%Creset %s%n        %Cblue[%ad] %ar by %an <%ae>
+  twoline = format:%C(yellow)%h %C(auto,magenta)%G? %Creset%s%C(auto)%d%n  %Cblue[%ad] %ar %C(cyan)%an <%ae>
+  threeline = format:%C(yellow)%h %C(auto,magenta)%G? %Creset%s%C(auto)%d%n  %Cblue[%ad] %ar %C(cyan)%an <%ae>%n
