@@ -53,7 +53,7 @@
 
 " }
 
-" develop { 
+" develop {
 
 "" VIM variable namespaces
 "             (nothing):  In a function: local to a function; otherwise: global
@@ -119,14 +119,14 @@
     """
     " Needed on some linux distros.
     " see http://www.adamlowe.me/2009/12/vim-destroys-all-other-rails-editors.html
-    "filetype off 
+    "filetype off
     "call pathogen#runtime_append_all_bundles()
     "call pathogen#helptags()
-    
+
     """
     """ vim-plug addon manager
     """
-    
+
     " Download plugin and put in autoload directory
     " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     "     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -163,6 +163,15 @@
     "
     " " Unmanaged plugin (manually installed and updated)
     " Plug '~/my-prototype-plugin'
+
+    " Installing/Cleaning/Updating plugins:
+    " PlugInstall [name ...] [#threads]   Install plugins
+    " PlugUpdate [name ...] [#threads]    Install or update plugins
+    " PlugClean[!]   Remove unused directories (bang version will clean without prompt)
+    " PlugUpgrade    Upgrade vim-plug itself
+    " PlugStatus     Check the status of plugins
+    " PlugDiff       Examine changes from the previous update and the pending changes
+    " PlugSnapshot[!] [output path]       Generate script for restoring the current snapshot of the plugins
 
     """
     """ vundle vim addon manager
@@ -261,24 +270,24 @@
   " }
 
   " JavaScript {
-    
+
     " Syntax support
     "Plug 'pangloss/vim-javascript'
     Plug 'othree/yajs', { 'for': 'javascript' }
-    
+
     " JSDoc syntax highlighting
     Plug 'othree/jsdoc-syntax.vim', { 'for': 'javascript' }
-    
+
     " Support for JavaScript libraries jQuery, lodash, React, Handlebars,
     " Chai, etc.
     Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
-    
+
     " JavaScript indentation
     Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
-    
+
     " JSX syntax highlighting
     Plug 'mxw/vim-jsx', { 'for': 'javascript' }
-    
+
     " Insert JSDoc comments
     Plug 'heavenshell/vim-jsdoc', { 'for': 'javascript' }
 
@@ -514,7 +523,7 @@ endfunction
 set t_Co=256
 " ^[ must be literal escape character, but how??
 "set t_AB=^[[48;5;%dm
-"set t_AF=^[[38;5;%dm 
+"set t_AF=^[[38;5;%dm
 
 " Increase readability if using terminal with dark background
 set background=dark
@@ -553,6 +562,8 @@ set list
 " Indicate problematic whitespace, see also :help listchars
 "set listchars=tab:>.,trail:.,extends:#,nbsp:.
 "set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+" This is also set with plugin vim-sensible?
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 " Modifications for specific filetypes
 "au FileType tex set listchars-=trail:.
 "au FileType html,xml set listchars-=tab:>.
@@ -649,7 +660,7 @@ nmap <leader>f9 :set foldlevel=9<CR>
 
 " visual shifting (does not exit Visual mode)
 vnoremap < <gv
-vnoremap > >gv 
+vnoremap > >gv
 
 " Enter directory listing for the directory of the current buffer
 "map <leader>. :e %:p:h<CR>
@@ -710,7 +721,11 @@ au BufNewFile,BufRead *.py
     \ set autoindent         |
     \ set fileformat=unix
 
-"python with virtualenv support
+" Python with virtualenv support
+" Note that we need to discern between whether vim is built with python 2 or 3
+let PYBUILD=system("vim --version | grep -oP '\+python3?\'")
+
+if (PYBUILD == "+python")
 py << EOF
 import os
 import sys
@@ -719,6 +734,18 @@ if 'VIRTUAL_ENV' in os.environ:
   activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
   execfile(activate_this, dict(__file__=activate_this))
 EOF
+endif
+
+if (PYBUILD == "+python3")
+py3 << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
+endif
 
 " }
 
@@ -887,7 +914,7 @@ au BufNewFile,BufRead *.rst, *.txt
 
 " Plugin configuration {
 
-" NERDTree { 
+" NERDTree {
   map <F2> :NERDTreeToggle<CR>
   let NERDTreeShowBookmarks=1
   let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
@@ -904,6 +931,33 @@ au BufNewFile,BufRead *.rst, *.txt
 " Installed exuberant ctags from here: ctags.sourceforge.net
 " Put the ctags binary in bin, which is in my path
 "let g:tagbar_ctags_bin = /home/brian/opt/bin/ctags
+
+" Some default bindings
+" p             Jump to the tag under the cursor, but stay in the Tagbar window.
+"                 Map option: tagbar_map_preview
+" P             Open the tag in a |preview-window|.
+"                 Map option: tagbar_map_previewwin
+" <C-N>         Go to the next top-level tag.
+"                 Map option: tagbar_map_nexttag
+" <C-P>         Go to the previous top-level tag.
+"                 Map option: tagbar_map_prevtag
+" <Space>       Display the prototype of the current tag (i.e. the line defining
+"               it) in the command line.
+"                 Map option: tagbar_map_showproto
+" v             Hide tags that are declared non-public. Tags without any
+"               visibility information will still be shown.
+"                 Map option: tagbar_map_hidenonpublic
+" o/za          Toggle the fold under the cursor or the current one if there is
+"               no fold under the cursor.
+"                 Map option: tagbar_map_togglefold
+" s             Toggle sort order between name and file order.
+"                 Map option: tagbar_map_togglesort
+" c             Toggle the |g:tagbar_autoclose| option.
+"                 Map option: tagbar_map_toggleautoclose
+" x             Toggle zooming the window.
+"                 Map option: tagbar_map_zoomwin
+" q             Close the Tagbar window.
+"                 Map option: tagbar_map_close
 
 " NOTE: Loads of other interesting options besides what is listed here
 
@@ -943,6 +997,11 @@ let g:tagbar_show_linenumbers = 1
 
 " Toggle tagbar, but don't jump there unless above option is set
 nnoremap <silent> <F3> :TagbarToggle<CR>
+
+" Automatically focus the tag bar when opening
+" Alternative is to change to window (beware intermediate windows) or using
+" :TagbarOpen f
+let g:tagbar_autofocus=1
 
 " Open tagbar (if not already open) and jump there.
 " Used for jumping to tagbar. To get back either jump to tag or close tagbar.
@@ -1055,21 +1114,21 @@ let g:ack_autofold_results = 0
 " [34] runs on Python 2.6, 2.7 or 3.3+).
 " I do however use python virtual environments and would prefer that python
 " binary to be used
-let g:ycm_python_binary_path = 'python'
+"let g:ycm_python_binary_path = 'python'
 
 " Close preview after completion (default:0)
-let g:ycm_autoclose_preview_window_after_completion=1
+"let g:ycm_autoclose_preview_window_after_completion=1
 
 " Close preview when leaving insert mode (default:0)
 " let g:ycm_autoclose_preview_window_after_insertion = 0
 
 " Show preview when completing (default: 0)
-let g:ycm_add_preview_to_completeopt = 0
+"let g:ycm_add_preview_to_completeopt = 0
 
 " Turn off YCM's identifier completer (the as-you-type popup) _and_ the
 " semantic triggers (the popup you'd get after typing '.' or '->' in say C++).
 " You can still force semantic completion with the '<C-Space>' shortcut.
-let g:ycm_auto_trigger = 1
+"let g:ycm_auto_trigger = 1
 
 " Minimum number of characters for identifier completer (default: 2)
 "let g:ycm_min_num_of_chars_for_completion = 3
@@ -1091,7 +1150,7 @@ let g:ycm_auto_trigger = 1
 
 " Complete file path from vim working instead of file in current
 " buffer (default:0)
-let g:ycm_filepath_completion_use_working_dir = 1
+"let g:ycm_filepath_completion_use_working_dir = 1
 
 " Complete ultisnips snippet triggers (default:1)
 " let g:ycm_use_ultisnips_completer = 1
@@ -1107,12 +1166,12 @@ let g:ycm_filepath_completion_use_working_dir = 1
 " will be opened in horizontal split.
 " Default: "'same-buffer'"
 "let g:ycm_goto_buffer_command = 'same-buffer'
-let g:ycm_goto_buffer_command = 'horizontal-split'
+"let g:ycm_goto_buffer_command = 'horizontal-split'
 
 "" Mappings
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
-map <leader>gr  :YcmCompleter GoToReferences<CR>
-map <leader>gd  :YcmCompleter GetDoc<CR>
+"map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"map <leader>gr  :YcmCompleter GoToReferences<CR>
+"map <leader>gd  :YcmCompleter GetDoc<CR>
 
 " }
 
@@ -1122,10 +1181,28 @@ map <leader>gd  :YcmCompleter GetDoc<CR>
 " http://stackoverflow.com/questions/27390285/vim-ultisnips-not-working-with-ycm
 
 " YCM conflicts with snip completion. See options with :h UltiSnips-triggers
-let g:UltiSnipsExpandTrigger="<c-space>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+"let g:UltiSnipsExpandTrigger="<c-space>"
+"let g:UltiSnipsJumpForwardTrigger="<c-j>"
+"let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
+" }
+
+" slimux {
+
+    " Recommended
+    " "nnoremap <Leader>s :SlimuxREPLSendLine<CR>
+    " "vnoremap <Leader>s :SlimuxREPLSendSelection<CR>
+    " "nnoremap <Leader>a :SlimuxShellLast<CR>
+
+    " " Send text from vim
+    " nnoremap <silent> <F9> :SlimuxREPLSendLine<CR>
+    " vnoremap <silent> <F9> :SlimuxREPLSendSelection<CR>
+    " nnoremap <silent> <S-F9> :SlimuxREPLConfigure<CR>
+
+    " Send shell commands
+    " nnoremap <silent> <Leader>sp :SlimuxShellPrompt<CR>
+    " nnoremap <silent> <Leader>sl :SlimuxShellLast<CR>
+    " nnoremap <silent> <Leader>sc :SlimuxShellConfigure<CR>
 " }
 
 " python-mode {
