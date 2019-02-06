@@ -399,6 +399,7 @@ set autoindent          " always set autoindenting on
 ""set hidden              " Allows changing buffer without saving
 "set scrolloff=3         " Begin scrolling when 3 lines from edge
 "                        " Use zz to center on cursor
+set nofoldenable         " Do not automatically fold. Toggle with zi in normal mode
 
 " }
 
