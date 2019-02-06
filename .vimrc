@@ -182,8 +182,12 @@
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
     Plug 'scrooloose/syntastic'
 
+    " Directory specific vim settings
+    " Settings in file '.vimdir'. Always use setlocal.
+    " See https://www.vim.org/scripts/script.php?script_id=1860
+
     " Fuzzy matching
-    Plug 'FuzzyFinder' | Plug 'L9'
+    Plug 'vim-scripts/FuzzyFinder' | Plug 'vim-scripts/L9'
     "Plug 'ctrlpvim/ctrlp.vim'
 
     Plug 'majutsushi/tagbar'
@@ -191,17 +195,13 @@
     " Grep replacement
     Plug 'mileszs/ack.vim'
 
-    " Simple todo support
-    " TODO: test this
-    "Plug 'vitalk/vim-simple-todo'
-
     " Lining up text and creating tables
     " Also dependency for gabrielelana/vim-markdown
     Plug 'godlygeek/tabular'
   " }
 
   " Snippets {
-    Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
   " }
 
   " Completion {
@@ -213,7 +213,12 @@
     " * --tern-completer (requires npm)
     " * --all
     "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all' }
-    Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
+    "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
+    
+    " Supertab
+    Plug 'ervandew/supertab'
+    
+    " neocomplete
   " }
 
   " tmux {
@@ -229,22 +234,22 @@
   " }
 
   " Ordered text files {
-    Plug 'csv.vim', { 'for': 'csv' }
+    Plug 'vim-scripts/csv.vim', { 'for': 'csv' }
     Plug 'elzr/vim-json'
   " }
 
   " Perl {
-    "Plug 'perl-support.vim'
+    "Plug 'perl-support.vim', { 'for': 'perl' }
   " }
 
   " c/c++ {
-    "Plug 'c.vim'
+    "Plug 'vim-scripts/c.vim'
   " }
 
   " LaTeX {
-    "Plug 'LaTeX-Box'
-    "Plug 'TeX-9'
-    "Plug 'AutomaticTexPlugin'
+    "Plug 'vim-scripts/LaTeX-Box'
+    "Plug 'vim-scripts/TeX-9'
+    "Plug 'vim-scripts/AutomaticTexPlugin'
   " }
 
   " Python {
@@ -252,6 +257,7 @@
     " Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
     Plug 'nvie/vim-flake8', { 'for': 'python' }
     Plug 'tmhedberg/SimpylFold', { 'for': 'python' }
+    Plug 'davidhalter/jedi-vim', { 'for': 'python', 'do': 'pip install jedi' }
   " }
 
   " JavaScript {
@@ -289,15 +295,24 @@
   " }
 
   " Ruby {
-    Plug 'rails.vim'
+    Plug 'vim-scripts/rails.vim'
   " }
   " R {
     "Plug 'vim-scripts/vim-R-plugin.git', {'for': 'r'}
     Plug 'jalvesaq/Nvim-R', {'for': 'r'}
   " }
-  " Markdown {
+  " Text, Markdown, Notes, Diary {
+  "
+    Plug 'vimwiki/vimwiki'
+
+    " Simple todo support
+    " Currently using vimwiki for todo support (in wiki/markdown)
+    "Plug 'vitalk/vim-simple-todo'
+
+  " Currently using vimwiki to format markdown. Other powerful plugins:
   " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
-    Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
+    "Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
+    "Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
   " }
   " Color scheme {
     Plug 'altercation/vim-colors-solarized'
@@ -305,8 +320,8 @@
   " }
 
   " Powerline {
-    Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/'}
-    "Plug 'powerline/powerline'
+    "Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'}
+    Plug 'powerline/powerline', {'do': 'pip install powerline-status'}
   " }
 
   " vim-plug end {
@@ -322,7 +337,7 @@
 """       left some of old setup commented out.
 
 "syntax on
-"set hlsearch
+set hlsearch
 
 " Soft wrapping
 " Not using linebreak to try to break at words as soft wrapping should not be
@@ -534,8 +549,9 @@ set number
 
 " Indicate special characters
 set list
-" Indicate problematic whitespace
+" Indicate problematic whitespace, see also :help listchars
 "set listchars=tab:>.,trail:.,extends:#,nbsp:.
+"set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 " Modifications for specific filetypes
 "au FileType tex set listchars-=trail:.
 "au FileType html,xml set listchars-=tab:>.
@@ -1140,6 +1156,36 @@ autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
   
 " }
 
+" vimwiki {
+
+let wiki_1 = {}
+let wiki_1.path = '~/vimwiki_work_rga_md/'
+let wiki_1.syntax = 'markdown'
+let wiki_1.ext = '.md'
+
+let wiki_2 = {}
+let wiki_2.path = '~/vimwiki_personal_md/'
+let wiki_2.syntax = 'markdown'
+let wiki_2.ext = '.md'
+
+let g:vimwiki_list = [wiki_1, wiki_2]
+let g:vimwiki_ext2syntax = {'.md': 'markdown', '.markdown': 'markdown'}
+
+" Highlight checked [X] check box with |group-name| "Comment".
+let g:vimwiki_hl_cb_checked = 1
+" If a file with a registered extension (see |vimwiki-register-extension|),
+" make temporary wiki and append it to |g:vimwiki_list|.
+" If I don't want to use vimwiki when not in wiki folders..
+"let g:vimwiki_global_ext = 0
+
+" Folding ('expr' is fastest: sections and code blocks)
+let g:vimwiki_folding = 'expr'
+
+" Header numbering in html conversion
+let g:vimwiki_html_header_numbering = 2
+
+" }
+
 " simple-todo {
 
 " Disable default key bindings
@@ -1153,7 +1199,7 @@ autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 " Define tick symbol (default is 'x')
 "let g:simple_todo_tick_symbol = 'X'
 
-" Define list symbol (default is '*')
+" Define list symbol (default is '*') IS THIS DEPRECATED?
 "let g:simple_todo_list_symbol = '*'
 
 " }

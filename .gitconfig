@@ -6,31 +6,56 @@
   editor = vim
 [apply]
   whitespace = fix
-[url "https://"]
-  insteadOf = git://
+#[url "https://"]
+#  insteadOf = git://
 [alias]
-  #br = branch
+  br = branch -avv
+  bra = !"echo 'Known branches:' && git br && echo 'Local branches merged to current branch:' && git branch --merged && echo 'Local branches NOT merged to current branch:' && git branch --no-merged"
   #ci = commit
   #co = checkout
   #df = diff
   g = grep -I
   lg = log -p
+  # Commit history
   #lol = log --graph --decorate --pretty=oneline --abbrev-commit
   #lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   lol = log --graph --pretty=onelinec --date=short
-  lola = log --graph --pretty=onelinec --date=short --all
+  # More info per commit
   lols = log --graph --pretty=threeline --date=short
+  # Prettier / first Parent. For just merges done to branch - avoid feature branch commit clutter
+  lolp = log --graph --pretty=onelinec --date=short --first-parent
+  # For all branches
+  lola = log --graph --pretty=onelinec --date=short --all
+  # Just decorated commits for all branches - see relationships between branches/tags
+  lold = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
+  # For all branches, with more info per commit
   lolsa = log --graph --pretty=threeline --date=short --all
-  lolol = log --graph --decorate --pretty=full --abbrev-commit
-  lolola = log --graph --decorate --pretty=full --abbrev-commit --all
+  # Full commit messages with detailed info
+  lolol = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames
+  lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
+  # Other stuff
   ls = ls-files
   unadd = rm --cached --
   unstage = reset HEAD --
   d = difftool
-  pp = !"echo 'Pull'; git pull; echo 'Push'; git push"
+  pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
+  fp = fetch --all --prune
   #rb = rbranch
   #rv = review
   st = status
+  # History for single file
+  hf = log --follow -p --
+  # All commits that has changed a file - over all branches, reflog and stashes
+  # Also works with gitk (consider also using flag --author-date-order)
+  cf = log --all --first-parent --remotes --reflog --
+  # Same, but as short list
+  cfl = log --graph --pretty=onelinec --date=short --all --first-parent --remotes --reflog --
+  # Diffs for file in all commits that has changed file - over all branches, reflog and stashes
+  cfp = log --all --first-parent --remotes --reflog -p --
+  # Housekeeping pointers
+  housekeep = !"echo 'Local and remote branches (Remember to sync from origin `git fetch --all --prune`):'; git branch -a && echo 'Branches already merged with HEAD:'; git branch --merged"
+  # Some info
+  tellme = !"git st ; git bra ; echo 'Decorated commits for all branches:' ; git lold"
 [color]
   ui = auto
   #diff = auto

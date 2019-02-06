@@ -1,0 +1,39 @@
+#!/bin/bash
+
+USAGE="USAGE:   irodsenv [env name]"
+
+IRODSBASENAME=.irods
+IRODSENVDIR=${HOME}/${IRODSBASENAME}
+SPECIFIEDENVDIR=${IRODSENVDIR}_$1
+
+# Check for input parameter
+if [[ -z $1 ]]; then
+    echo "$USAGE"
+    echo ""
+    echo "Current environment: `ls -l ${IRODSENVDIR} | grep -oP "${IRODSBASENAME}_\S+$" | cut -d '_' -f 1 --complement`"
+    echo ""
+    echo "Available environments:"
+    ls -1d ${IRODSENVDIR}* | grep -P "${IRODSBASENAME}_\S+$" | cut -d '_' -f 1 --complement
+    exit 1
+fi
+
+# Check if specified env exist
+if [[ ! -d $SPECIFIEDENVDIR ]]; then
+    echo "Environment '$1' does not exist! Must be available as '$SPECIFIEDENVDIR'"
+    exit 9
+fi
+
+# Check that we are not messing with an ordinary installation. Remove current symlink if we are ok.
+if [[ -e $IRODSENVDIR  && ! -L $IRODSENVDIR ]]; then
+    echo "File/dir '$IRODSENVDIR'is not a symbolic link!"
+    echo "This tool expect that the irods enviroment directory is a symbolic link pointing the currently used enviroment!"
+    exit 99
+else
+    rm $IRODSENVDIR 2>/dev/null
+fi
+
+# Create symlink to specified environment
+ln -s $SPECIFIEDENVDIR $IRODSENVDIR
+
+echo "Switched to environment '$1' ($SPECIFIEDENVDIR)"
+

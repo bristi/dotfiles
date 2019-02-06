@@ -12,6 +12,9 @@ fi
 # Constants
 HELPER_TOOLS=~/opt/misc_helpers
 
+# Environment variables
+export EDITOR="/usr/bin/vim"
+
 # Some interesting unicode characters
 # Ϊ λ ❯ ❮ ♺ ✚ ⬆ ⬇ ✖ ✱ ➜ ✭ ◼
 
@@ -38,6 +41,14 @@ export WORKON_HOME=~/.venv
 #source /mnt/ngs/biss/bin/virtualenvwrapper.sh
 # For python 3.4+ we use pyvenv (installed systemwide)
 
+# (Ana)Conda
+export CONDA_ENVS_PATH=/mnt/ngstemp/Brian/condaenvs
+
+# iRODS
+# Use specific iRODS environment file like so:
+#   export IRODS_ENVIRONMENT_FILE=/full/path/to/different/irods_environment.json
+# Implement here to use dirrent iRODS env on as02-u, as02-t and as02-p (which is to be definitive?)
+
 # User specific aliases and functions
 alias l='ls'
 
@@ -48,6 +59,10 @@ alias l='ls'
 git-branch-name()
 {
     echo $(git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
+    #BRANCH_NAME=$(git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
+    if [ ! $? -eq 0 ]; then
+        echo "no branch"
+    fi
 }
 
 git-dirty()
@@ -61,7 +76,7 @@ git-dirty()
 
 git-ahead()
 {
-    brinfo=$(git branch -v | grep $(git-branch-name))
+    brinfo=$(git branch -v | grep $(git-branch-name) 2>/dev/null)
     if [[ $brinfo =~ ("[ahead "([[:digit:]]*)]) ]]
     then
         echo " ${BASH_REMATCH[2]}⬆"
@@ -70,7 +85,7 @@ git-ahead()
 
 git-behind()
 {
-    brinfo=$(git branch -v | grep $(git-branch-name))
+    brinfo=$(git branch -v | grep $(git-branch-name) 2>/dev/null)
     if [[ $brinfo =~ ("[behind "([[:digit:]]*)]) ]]
     then
         echo " ${BASH_REMATCH[2]}⬇"
@@ -86,6 +101,8 @@ gitify()
         status2=$(git status 2>/dev/null | head -1)
         if [[ $status2 =~ "HEAD detached" ]]; then
             echo "DETACHED HEAD"
+        #elif [[ $status2 =~ "Not currently on any branch" ]]; then
+        #    echo "NO BRANCH"
         else
             echo "$(git-branch-name)$(git-dirty)$(git-ahead)$(git-behind)"
         fi
@@ -185,7 +202,7 @@ TIMESTAMP="\[\e[90m\]\D{%a %d %b %H:%M}"
 #PS1="\[\033[1;30m\](\D{%a %d %b %H:%M}) \[\033[1;33m\]\$(getgitstat) \$(getpyvenv)
 #\[\033[1;34m\]\W \[\033[1;32m\]\$ \[\033[m\]"
 
-PS1="${TIMESTAMP}${BYELLOW}\$(getgitstat)\$(getpyvenv)
+PS1="${TIMESTAMP} [\h]${BYELLOW}\$(getgitstat)\$(getpyvenv)
 ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 
 ## This is a red prompt for use with root
@@ -209,3 +226,6 @@ ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 source ${HOME}/.autoenv/activate.sh
 
 
+
+# added by Anaconda3 4.4.0 installer
+export PATH="/mnt/ngs/biss/opt/anaconda3/bin:$PATH"
