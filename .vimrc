@@ -207,6 +207,12 @@
     " Lining up text and creating tables
     " Also dependency for gabrielelana/vim-markdown
     Plug 'godlygeek/tabular'
+
+    " Increment/decrement dates, times and more with CTRL-A/CTRL-X
+    Plug 'tpope/vim-speeddating'
+
+    " Calendar
+    Plug 'mattn/calendar-vim'
   " }
 
   " Snippets {
@@ -312,16 +318,25 @@
   " }
   " Text, Markdown, Notes, Diary {
   "
+    " Wiki, todo, markdown
     Plug 'vimwiki/vimwiki'
 
     " Simple todo support
     " Currently using vimwiki for todo support (in wiki/markdown)
     "Plug 'vitalk/vim-simple-todo'
 
+  " Markdown
   " Currently using vimwiki to format markdown. Other powerful plugins:
   " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
     "Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
     "Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+
+  " RestructuredText
+  " See also:
+  " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
+  " * https://github.com/gu-fan/InstantRst
+    Plug 'Rykka/riv.vim'
+
   " }
   " Color scheme {
     Plug 'altercation/vim-colors-solarized'
@@ -330,7 +345,7 @@
 
   " Powerline {
     "Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'}
-    Plug 'powerline/powerline', {'do': 'pip install powerline-status'}
+    Plug 'powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'}
   " }
 
   " vim-plug end {
@@ -757,8 +772,9 @@ au BufNewFile,BufRead *.js, *.html, *.css
 " }
 
 " notes {
-" Note that I am using a plugin for markdown so not including *.md here
-au BufNewFile,BufRead *.rst, *.txt
+" Note that I am using plugins for markdown and restructuredtext so not
+" including *.md or *.rst here
+au BufNewFile,BufRead *.txt
     \ set tabstop=4          |
     \ set softtabstop=4      |
     \ set shiftwidth=4       |
