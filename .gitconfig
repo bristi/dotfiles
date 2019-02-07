@@ -33,10 +33,14 @@
   # Full commit messages with detailed info
   lolol = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames
   lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
+  # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
+  unadd = rm --cached --
+  # Unstage file(s). Leave index and working tree alone.
+  unstage = reset HEAD --
+  # Discard changes to file(s) in working tree
+  unmod = checkout --
   # Other stuff
   ls = ls-files
-  unadd = rm --cached --
-  unstage = reset HEAD --
   d = difftool
   pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
   fp = fetch --all --prune
