@@ -343,9 +343,12 @@
     Plug 'jnurmine/Zenburn'
   " }
 
-  " Powerline {
+  " Status line {
+  " Currently using own custom statusline
+  "
     "Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'}
-    Plug 'powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'}
+    "Plug 'powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'}
+    "Plug 'itchyny/lightline.vim'
   " }
 
   " vim-plug end {
@@ -597,9 +600,11 @@ set statusline+=\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]
 set statusline+=\ [%b,0x%B]
 set statusline+=%=
 set statusline+=\ %{SyntasticStatuslineFlag()}
-set statusline+=\ %{fugitive#statusline()}
+"set statusline+=\ %{fugitive#statusline()}
+set statusline+=\ [%{fugitive#head(5)}]
 set statusline+=\ %-14(%l,%c%V%)\ %p%%\ [%Ll]
 " Make status line second last - may be removed by setting to 0
+" Also necessary for fancy status lines
 set laststatus=2
 
 " Suffixes that get lower priority when doing tab completion for filenames.
@@ -1104,6 +1109,19 @@ let g:ack_autofold_results = 0
   "python powerline_setup()
   "python del powerline_setup
 
+" }
+
+" Lightline {
+"let g:lightline = {
+"      \ 'colorscheme': 'wombat',
+"      \ 'active': {
+"      \   'left': [ [ 'mode', 'paste' ],
+"      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+"      \ },
+"      \ 'component_function': {
+"      \   'gitbranch': 'fugitive#head'
+"      \ },
+"      \ }
 " }
 
 " YouCompleteMe {
