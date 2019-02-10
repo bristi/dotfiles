@@ -33,6 +33,8 @@
   # Full commit messages with detailed info
   lolol = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames
   lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
+  # Commits since last work day - daily standup
+  standup = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last friday; else echo yesterday; fi)"
   # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
   unadd = rm --cached --
   # Unstage file(s). Leave index and working tree alone.
@@ -44,6 +46,7 @@
   d = difftool
   pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
   fp = fetch --all --prune
+  #fr = !"git fetch && git rebase -i origin/master"
   #rb = rbranch
   #rv = review
   st = status
@@ -60,6 +63,12 @@
   housekeep = !"echo 'Local and remote branches (Remember to sync from origin `git fetch --all --prune`):'; git branch -a && echo 'Branches already merged with HEAD:'; git branch --merged"
   # Some info
   tellme = !"git st ; git bra ; echo 'Decorated commits for all branches:' ; git lold"
+  showconflicted = !"git ls-files --unmerged | cut -f2 | sort -u"
+  editconflicted = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
+  details = cat-file -p
+  root = rev-parse --show-cdup
+  path = rev-parse --show-toplevel
+  upstream = rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}
 [color]
   ui = auto
   #diff = auto
