@@ -17,6 +17,7 @@
   g = grep -I
   lg = log -p
   # Commit history
+  l = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
   #lol = log --graph --decorate --pretty=oneline --abbrev-commit
   #lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   lol = log --graph --pretty=onelinec --date=short
@@ -37,10 +38,17 @@
   standup = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last friday; else echo yesterday; fi)"
   # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
   unadd = rm --cached --
+  # Same but with entire directory (recursively)
+  unaddd = rm --cached -r --
   # Unstage file(s). Leave index and working tree alone.
-  unstage = reset HEAD --
+  #   Before git 1.8.2
+  #unstage = reset HEAD --
+  #   At or after git 1.8.2
+  unstage = reset --
+  # Undo a commit (soft reset to parent HEAD)
+  uncommit = reset --soft HEAD^1 --
   # Discard changes to file(s) in working tree
-  unmod = checkout --
+  unmodify = checkout --
   # Other stuff
   ls = ls-files
   d = difftool
@@ -69,6 +77,9 @@
   root = rev-parse --show-cdup
   path = rev-parse --show-toplevel
   upstream = rev-parse --symbolic-full-name --abbrev-ref=strict HEAD@{u}
+  # Following may require explicit branch, eg origin/develop. And remember to fetch first..
+  originlogdiff = log HEAD..origin
+  origindiff = diff HEAD...origin
 [color]
   ui = auto
   #diff = auto
@@ -90,6 +101,9 @@
 [merge]
   log = true
   tool = vimdiff
+[filter "media"]
+  clean = git-media-clean %f
+  smudge = git-media-smudge %f
 [diff]
   tool = vimdiff
 [difftool]

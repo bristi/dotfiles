@@ -1,0 +1,8 @@
+# Path to conda binaries
+# We need this for out toggle_conda (in PATH) function
+CONDAPATH=/mnt/ngs/biss/opt/anaconda3/bin
+
+# Path to conda environments
+# NOTE: Can also use 'envs_dirs' option in .condarc
+export CONDA_ENVS_PATH=/mnt/ngstemp/Brian/condaenvs
+

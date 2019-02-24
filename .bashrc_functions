@@ -1,0 +1,171 @@
+###
+### bashrc helper functions
+###
+
+# This does not use regex :), so not minimum bash 3. Simpler and more readable imho but may be
+# implemented in other ways if stuck on old system. <-- rewrite
+#
+# These were helpful:
+#   https://stackoverflow.com/questions/10986794/unix-remove-part-of-path
+#   https://stackoverflow.com/questions/370047/what-is-the-most-elegant-way-to-remove-a-path-from-the-path-variable-in-bash
+
+##
+## Manipulating PATH
+##
+
+# This does not alter PATH directly but is a gen purpose function
+# that returns the modified path like string.
+# Note that there is a check for whether or not the item was removed. This is
+# for the edge case where the item to be removed appears multiple times after
+# another, eg ''/foo:/bar/bazz:/bar/bazz'. The implementation could instead
+# insert (and match) only a ':' at the end but this would impose the
+# constriction that beginning substrings of other items are never different.
+#
+# remove_item_from_pathlike <string to remove> <path like string>
+remove_item_from_pathlike() {
+   #echo "-- Start"
+   local REMITEM PATHLIKE
+   REMITEM=":$1:"
+   #d=":$PATH:"
+   PATHLIKE=":$2:"
+
+   # Replace every occurrence of item (flanked by ':') with a single ':'
+   PATHLIKE=${PATHLIKE//$REMITEM/:}
+
+   # Substitute resulting double ':'s with singles
+   #re='(.*:):+(.*)'
+   #while [[ $d =~ $re ]]; do
+   #  d=${BASH_REMATCH[1]}${BASH_REMATCH[2]}
+   #done
+
+   # In case REMITEM appeared several times right after each other
+   if [[ $PATHLIKE = *"$REMITEM"* ]]; then
+       d=$(remove_item_from_pathlike $REMITEM $PATHLIKE)
+       #echo "Not completely removed.."
+       #echo "$d"
+   fi
+
+   # Remove beginning ':' from PATHLIKE
+   PATHLIKE=${PATHLIKE/#:/}
+   #echo "d: $d"
+   #PATH=${d/%:/}
+   # Remove end ':'
+   #echo "New PATH: ${d/%:/}"
+
+   #echo "-- End"
+   # Remove end ':' from PATHLIKE
+   PATHLIKE=${PATHLIKE/%:/}
+   echo "$PATHLIKE"
+}
+
+
+pathlike_append () {
+    local ADDITEM PATHLIKE
+    ADDITEM="$1"
+    PATHLIKE="$2"
+
+    # Remove any identical items
+    PATHLIKE=$(remove_item_from_pathlike $ADDITEM $PATHLIKE)
+
+    # Append
+    echo "${PATHLIKE}:${ADDITEM}"
+}
+
+pathlike_prepend () {
+    local ADDITEM PATHLIKE
+    ADDITEM="$1"
+    PATHLIKE="$2"
+
+    # Remove any identical items
+    PATHLIKE=$(remove_item_from_pathlike $ADDITEM $PATHLIKE)
+
+    # Prepend
+    echo "${ADDITEM}:${PATHLIKE}"
+}
+
+# Oneliners operating directly on PATH
+path_remove () { export PATH=$(remove_item_from_pathlike $1 $PATH); }
+path_append ()  { path_remove $1; export PATH="$PATH:$1"; }
+path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
+
+
+##
+## Git info for prompt (PS1)
+##
+
+git-branch-name()
+{
+    echo $(git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
+    #BRANCH_NAME=$(git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
+    if [ ! $? -eq 0 ]; then
+        echo "no branch"
+    fi
+}
+
+git-dirty()
+{
+    st=$(git status 2>/dev/null | tail -n 1)
+    if [[ ! $st =~ "working "[[:alpha:]]+" clean" ]]; then
+        echo "✱"
+    fi
+}
+
+git-ahead()
+{
+    brinfo=$(git branch -v | grep $(git-branch-name) 2>/dev/null)
+    if [[ $brinfo =~ ("[ahead "([[:digit:]]*)]) ]]; then
+        echo " ${BASH_REMATCH[2]}⬆"
+    fi
+}
+
+git-behind()
+{
+    brinfo=$(git branch -v | grep $(git-branch-name) 2>/dev/null)
+    if [[ $brinfo =~ ("[behind "([[:digit:]]*)]) ]]; then
+        echo " ${BASH_REMATCH[2]}⬇"
+    fi
+}
+
+gitify()
+{
+    status=$(git status 1>/dev/null 2>/dev/null ; echo "$?")
+    if [[ ! $status == "0" ]]; then
+        echo ""
+    else
+        status2=$(git status 2>/dev/null | head -1)
+        if [[ $status2 =~ "HEAD detached" ]]; then
+            echo "DETACHED HEAD"
+        else
+            echo "$(git-branch-name)$(git-dirty)$(git-ahead)$(git-behind)"
+        fi
+    fi
+}
+
+getgitstat()
+{
+    MY_GIT_STAT=$(gitify)
+    if test -z "$MY_GIT_STAT" ; then
+        echo ""
+    else
+        echo " (git:${MY_GIT_STAT})"
+    fi
+}
+
+
+##
+## Python virtual env info for prompt (PS1)
+##
+
+getpyvenv()
+{
+    if test -n "$VIRTUAL_ENV" ; then
+        echo " (pyenv:`basename \"$VIRTUAL_ENV\"`)"
+    elif test -n "$CONDA_PREFIX" ; then
+        echo " (pyenv:`basename \"$CONDA_PREFIX\"`)"
+    else
+        echo ""
+    fi
+}
+
+
+

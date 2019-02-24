@@ -1,0 +1,11 @@
+
+# Currently testing icommands
+#export PATH=$PATH:/opt/irods-4.1.10/iRODS/clients/icommands/bin
+#path_append /opt/irods-4.1.10/iRODS/clients/icommands/bin
+
+# Using mssql tools
+path_append /opt/mssql-tools/bin
+
+# Local bin
+#path_prepend $HOME/.local/bin
+
