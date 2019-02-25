@@ -71,9 +71,10 @@ if [[ "$OSTYPE" == darwin* ]]; then
     export BROWSER='open'
 
     # Set github api token for homebrew
-    #export HOMEBREW_GITHUB_API_TOKEN=d1bed1cc58084971fa48a0cc4d8efde64da5d489
-    # Changed?
-    #export HOMEBREW_GITHUB_API_TOKEN=d3ae385b44eb02bc0c868cf56ca170709312a6ed
+    # Create and manage at https://github.com/settings/tokens - remember to unselect all scopes
+    # for token as there is no need for it to access private information
+    # NOTE: Do not put this in version control and upload to public repository ;)
+    #export HOMEBREW_GITHUB_API_TOKEN=<insert token here>
 
 #  # Turn off special handling of ._* files in tar, etc.
 #  # http://superuser.com/questions/259703/get-mac-tar-to-stop-putting-filenames-in-tar-archives:
