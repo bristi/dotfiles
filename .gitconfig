@@ -16,10 +16,10 @@
   #df = diff
   g = grep -I
   lg = log -p
-  # Commit history
+  ## Commit history
+  # Just decorated commits for all branches - see relationships between branches/tags
   l = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
-  #lol = log --graph --decorate --pretty=oneline --abbrev-commit
-  #lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  # Pretty short log with graph
   lol = log --graph --pretty=onelinec --date=short
   # More info per commit
   lols = log --graph --pretty=threeline --date=short
@@ -27,8 +27,6 @@
   lolp = log --graph --pretty=onelinec --date=short --first-parent
   # For all branches
   lola = log --graph --pretty=onelinec --date=short --all
-  # Just decorated commits for all branches - see relationships between branches/tags
-  lold = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
   # For all branches, with more info per commit
   lolsa = log --graph --pretty=threeline --date=short --all
   # Full commit messages with detailed info
@@ -36,6 +34,7 @@
   lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
   # Commits since last work day - daily standup
   standup = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last friday; else echo yesterday; fi)"
+  ## Modify working tree / index
   # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
   unadd = rm --cached --
   # Same but with entire directory (recursively)
@@ -49,7 +48,7 @@
   uncommit = reset --soft HEAD^1 --
   # Discard changes to file(s) in working tree
   unmodify = checkout --
-  # Other stuff
+  ## Other stuff
   ls = ls-files
   d = difftool
   pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
@@ -69,7 +68,7 @@
   cfp = log --all --first-parent --remotes --reflog -p --
   # Housekeeping pointers
   housekeep = !"echo 'Local and remote branches (Remember to sync from origin `git fetch --all --prune`):'; git branch -a && echo 'Branches already merged with HEAD:'; git branch --merged"
-  # Some info
+  ## Some info
   tellme = !"git st ; git bra ; echo 'Decorated commits for all branches:' ; git lold"
   showconflicted = !"git ls-files --unmerged | cut -f2 | sort -u"
   editconflicted = !"f() { git ls-files --unmerged | cut -f2 | sort -u ; }; $EDITOR `f`"
