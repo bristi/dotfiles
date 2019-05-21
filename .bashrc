@@ -28,6 +28,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
+#
+# Non-standard/custom programmable completion
+#
+# i-commands (iRODS)
+source ~/.bash_completions_custom/i-commands-auto.bash
+
 # Custom functions
 source ~/.bashrc_functions
 
