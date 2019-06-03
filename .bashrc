@@ -265,6 +265,12 @@ source ~/.bashrc.local.paths
 #export PATH=/usr/local/bin:$PATH
 #path_prepend /usr/local/bin
 
+# OSX specifics
+if [[ "$OSTYPE" == darwin* ]]; then
+    # Using homebrew package coreutils
+    path_prepend /usr/local/opt/coreutils/libexec/gnubin
+fi
+
 # Using anaconda
 # NOTE: conda is added after most other PATHs and thus probably after
 # local/brew python (prepended, so higher prio)
