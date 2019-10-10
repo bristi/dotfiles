@@ -50,7 +50,30 @@
 "   nnoremap <silent> <Leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
 "   nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 2/3)<CR>
 
+" }
 
+" modifying this file {
+"
+"" Using vim/neovim?
+"
+" Set options/run commands depending on whether we are using neovim or not
+"
+" " No neovim
+" if !has('nvim')
+"   set ttymouse=xterm2
+" endif
+"
+" " Using neovim
+" if has('nvim')
+"   tnoremap <Esc> <C-\><C-n>
+" endif
+"
+"" If command exist or not
+"
+" if exists(':tnoremap')
+"   tnoremap <Esc> <C-\><C-n>
+" endif
+"
 " }
 
 " develop {
@@ -65,6 +88,28 @@
 "|script-variable|    s:  Local to a |:source|'ed Vim script.
 "|function-argument|  a:  Function argument (only inside a function).
 "|vim-variable|       v:  Global, predefined by Vim.
+
+"" Investigating vim environment
+" https://vim.fandom.com/wiki/Displaying_the_current_Vim_environment
+" Eg:
+" :abbreviate   - list abbreviations
+" :autocmd      - list auto-commands
+" :augroup      - augroups
+" :command      - list commands
+" :imap         - list insert mode maps
+" :let          - all variables
+" :let g:       - global variables
+" :let v:       - Vim variables
+" :map!         - Insert and Command-line mode maps (imap, cmap)
+" :map          - Normal and Visual mode maps (nmap, vmap, xmap, smap, omap)
+" :messages     - message history
+" :set all      - all options, including defaults
+" :setglobal    - global option values
+" :setlocal     - local option values
+" :set          - options with non-default value
+" :verbose      - show info about where a map or autocmd or function is
+"                 defined
+" :vmap         - Visual and Select mode mappings only
 
 "" About signs/sign column
 " Vim will automatically use sign column if signs present
@@ -97,6 +142,10 @@
 " http://vim.sourceforge.net/scripts/script.php?script_id=491
 " http://www.troubleshootingwiki.org/Debugging_Vim_Scripts
 
+"" Use scriptease
+" tpope wrote a script to write scripts :)
+" It is installed as plugin, check github for usage/options
+
 " }
 
 " }
@@ -107,6 +156,16 @@
     """ For true vi-compatibility comment out following statements
     "set nocompatible    " Use Vim defaults instead of 100% vi compatibility
     "set backspace=indent,eol,start  " more powerful backspacing
+
+    " Python versions for neovim (and vim?)
+    " https://neovim.io/doc/user/provider.html#provider-python
+    if has('nvim')
+      "let g:python_host_prog = '/usr/local/bin/python'
+      "let g:python3_host_prog = '/usr/local/bin/python3'
+      " TODO: make this system independent..
+      let g:python_host_prog = '/Users/brian/.pyenv/versions/neovim2/bin/python'
+      let g:python3_host_prog = '/Users/brian/.pyenv/versions/neovim3/bin/python'
+    endif
   " }
 " }
 
@@ -188,24 +247,31 @@
 
   " General {
     Plug 'tpope/vim-sensible'
+
+    " File tree
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-    Plug 'scrooloose/syntastic'
+
+    " Linting
+    " Plug 'scrooloose/syntastic'
+    " TODO: Configure ale
+    Plug 'w0rp/ale'
+
+    " CTags
+    Plug 'majutsushi/tagbar'
+
+    " Undo tree
+    Plug 'sjl/gundo.vim'
 
     " Directory specific vim settings
     " Settings in file '.vimdir'. Always use setlocal.
     " See https://www.vim.org/scripts/script.php?script_id=1860
-
-    " Fuzzy matching
-    Plug 'vim-scripts/FuzzyFinder' | Plug 'vim-scripts/L9'
-    "Plug 'ctrlpvim/ctrlp.vim'
-
-    Plug 'majutsushi/tagbar'
-    Plug 'sjl/gundo.vim'
-    " Grep replacement
-    Plug 'mileszs/ack.vim'
+    " OR
+    " Project folders
+    Plug 'dbakker/vim-projectroot'
 
     " Lining up text and creating tables
-    " Also dependency for gabrielelana/vim-markdown
+    " Dependency for
+    " * gabrielelana/vim-markdown
     Plug 'godlygeek/tabular'
 
     " Increment/decrement dates, times and more with CTRL-A/CTRL-X
@@ -213,10 +279,62 @@
 
     " Calendar
     Plug 'mattn/calendar-vim'
+
+    " Open UIR in browser
+    " Dependency for
+    " * weirongxu/plantuml-previewer
+    Plug 'tyru/open-browser.vim'
+
+    " A plugin to help write plugins (or just vim development)
+    Plug 'tpope/vim-scriptease'
+  " }
+
+  " Generic code manipulation {
+
+    " Comment / comment out
+    "Plug 'scrooloose/nerdcommenter'
+    Plug 'tpope/vim-commentary'
+
+    " Parantheses, structural elements, ..
+    Plug 'tpope/vim-surround'
+    "Plug Raimondi/delimitMate
+
+    " Work with an isolated segment of code
+    Plug 'chrisbra/NrrwRgn'
+
+    " Allow repeating of maps
+    " Also helpful/necessary for some plugins;
+    " * vim-surround
+    Plug 'tpope/vim-repeat'
+  " }
+
+  " Moving / finding {
+    
+    " Fuzzy matching
+    "Plug 'vim-scripts/FuzzyFinder' | Plug 'vim-scripts/L9'
+    "Plug 'ctrlpvim/ctrlp.vim'
+    " Note that we could also use fzf if already installed, see github
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+    " This allows us to use Ag while defining own escapes
+    " https://jesseleite.com/posts/4/project-search-your-feelings
+    " https://vimawesome.com/plugin/vim-agriculture
+    Plug 'jesseleite/vim-agriculture'
+
+    " Grep replacement
+    Plug 'mileszs/ack.vim'
+  
+    " Comfortable "physics-based" motion
+    Plug 'yuttie/comfortable-motion.vim'
+
   " }
 
   " Snippets {
     "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+  " }
+
+  " Faster folding {
+    Plug 'konfekt/fastfold'
   " }
 
   " Completion {
@@ -229,11 +347,21 @@
     " * --all
     "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all' }
     "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
-    
+
     " Supertab
-    Plug 'ervandew/supertab'
-    
-    " neocomplete
+    "Plug 'ervandew/supertab'
+
+    " ncm2
+    " Currently using a forked version that doesn't bother with eg type and
+    " description (jedi with python code) because it is faster for big
+    " libraries
+    if has('nvim')
+      Plug 'roxma/nvim-yarp'  " dependency of ncm2
+      Plug 'ncm2/ncm2'  " awesome autocomplete plugin
+      " Plug 'HansPinckaers/ncm2-jedi'  " fast python completion (use ncm2 if you want type info or snippet support)
+      Plug 'ncm2/ncm2-bufword'  " buffer keyword completion
+      Plug 'ncm2/ncm2-path'  " filepath completion
+    endif
   " }
 
   " tmux {
@@ -246,6 +374,11 @@
   " VCS systems {
     Plug 'tpope/vim-fugitive'
     Plug 'mhinz/vim-signify'
+  " }
+
+  " Testing {
+    Plug 'janko/vim-test'
+
   " }
 
   " Ordered text files {
@@ -269,7 +402,7 @@
 
   " Python {
     " Plug 'klen/python-mode', { 'for': 'python' }
-    " Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
+    Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
     Plug 'nvie/vim-flake8', { 'for': 'python' }
     Plug 'tmhedberg/SimpylFold', { 'for': 'python' }
     Plug 'davidhalter/jedi-vim', { 'for': 'python', 'do': 'pip install jedi' }
@@ -312,36 +445,51 @@
   " Ruby {
     Plug 'vim-scripts/rails.vim'
   " }
+
   " R {
     "Plug 'vim-scripts/vim-R-plugin.git', {'for': 'r'}
     Plug 'jalvesaq/Nvim-R', {'for': 'r'}
   " }
-  " Text, Markdown, Notes, Diary {
-  "
+
+  " Text, wiki, markup, diagram, notes, diary {
+  
     " Wiki, todo, markdown
-    Plug 'vimwiki/vimwiki'
+    "Plug 'vimwiki/vimwiki'
 
     " Simple todo support
-    " Currently using vimwiki for todo support (in wiki/markdown)
+    " Alternative is vimwiki for todo support (in wiki/markdown)
     "Plug 'vitalk/vim-simple-todo'
 
-  " Markdown
-  " Currently using vimwiki to format markdown. Other powerful plugins:
-  " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
+    " Markdown
+    " Currently using vimwiki to format markdown. Other powerful plugins:
+    " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
     "Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
     "Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
 
-  " RestructuredText
-  " See also:
-  " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
-  " * https://github.com/gu-fan/InstantRst
-    Plug 'Rykka/riv.vim'
+    " RestructuredText
+    " See also:
+    " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
+    " * https://github.com/gu-fan/InstantRst
+    "Plug 'Rykka/riv.vim'
+    Plug 'gu-fan/riv.vim'
+
+    " Plantuml
+    " Previewing
+    Plug 'weirongxu/plantuml-previewer.vim'
+    " Syntax - isn't this built-in?? Note that first line has to contain
+    " with @startuml
+    Plug 'aklt/plantuml-syntax'
 
   " }
+
   " Color scheme {
     Plug 'altercation/vim-colors-solarized'
     Plug 'jnurmine/Zenburn'
   " }
+
+  " Highlight current line, depending on colors from theme
+  " Not usable (except for line number column) when using colorscheme?
+  "Plug 'miyakogi/conoline.vim'
 
   " Status line {
   " Currently using own custom statusline
@@ -362,6 +510,9 @@
 
 """ NOTE: Using vim-sensible plugin to do most of my general settings but
 """       left some of old setup commented out.
+
+" Encoding should be utf-8 ..
+set encoding=utf-8
 
 "syntax on
 set hlsearch
@@ -426,7 +577,11 @@ set autoindent          " always set autoindenting on
 ""set hidden              " Allows changing buffer without saving
 "set scrolloff=3         " Begin scrolling when 3 lines from edge
 "                        " Use zz to center on cursor
-set nofoldenable         " Do not automatically fold. Toggle with zi in normal mode
+"set nofoldenable         " Do not automatically fold. Toggle with zi in normal mode
+set relativenumber       " Use relative line numbering by default (toggle mapping: F6)
+set maxmempattern=10000   " Default 1000, max 2000000. Note: this is to
+"                         " overcome a current issue and should be looked into
+
 
 " }
 
@@ -533,6 +688,20 @@ function! MoveBuf(direction)
     exec "buffer " . bufno
 endfunction
 
+" Automatically change working directory to project root
+function! <SID>AutoProjectRootCD()
+  try
+    if &ft != 'help'
+      ProjectRootCD
+    endif
+  catch
+    " Silently ignore invalid buffers
+  endtry
+endfunction
+
+" TODO: Move this to relevant location (uses above function)
+autocmd BufEnter * call <SID>AutoProjectRootCD()
+
 " }
 
 " Visuals {
@@ -554,6 +723,8 @@ set background=dark
 
 " solarized
 "option name default optional ———————————————— g:solarized_termcolors= 16 | 256 g:solarized_termtrans = 0 | 1 g:solarized_degrade = 0 | 1 g:solarized_bold = 1 | 0 g:solarized_underline = 1 | 0 g:solarized_italic = 1 | 0 g:solarized_contrast = “normal”| “high” or “low” g:solarized_visibility= “normal”| “high” or “low” ————————————————
+" I do not use solarized theme in my terminals
+"let g:solarized_termcolors=256
 "colorscheme solarized
 
 " zenburn
@@ -563,12 +734,12 @@ colorscheme zenburn
 " color theme as it clears highlights..
 " Placed it outside of function so it would not be called
 " possibly overwriting a different colorscheme
-hi OverLength ctermbg=red ctermfg=white guibg=#592929
+"hi OverLength ctermbg=red ctermfg=white guibg=#592929
 "hi OverLength ctermbg=grey ctermfg=white guibg=grey30
-call ColorLongLinesToggle()
+"call ColorLongLinesToggle()
 
 " Line and/or column following cursor
-"set cursorline " currently set in .gvimrc
+set cursorline
 "set cursorcolumn
 " Line numbers
 set number
@@ -586,29 +757,45 @@ set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 "au FileType tex set listchars-=trail:.
 "au FileType html,xml set listchars-=tab:>.
 
+" Suffixes that get lower priority when doing tab completion for filenames.
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.fdb_latexmk,.lof,.lot,.lox,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.pdf,.ps,.eps,.jpg,.gif,.bmp,.svg,.png,.gz,.bz2,.zip,.rar
 
 " }
 
 " { Status line
+
 "" Fancy status line
 "set statusline=%<%f\ %m%r%h%w\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]\ [%b,0x%B]%=\ %-14(%l,%c%V%)\ %p%%\ [%Ll]
 " Added fugitive flag
 "set statusline=%<%f\ %m%r%h%w\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]\ [%b,0x%B]%=\ %{fugitive#statusline()}\ %-14(%l,%c%V%)\ %p%%\ [%Ll]
 " Added syntastic flag
 set statusline=%<%f\ %m%r%h%w
-set statusline+=\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]
-set statusline+=\ [%b,0x%B]
+" line ending type/file type, file encoding
+"set statusline+=\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]
+" file type
+set statusline+=\ \ %Y
+" decimal,hex value of character under cursor
+"set statusline+=\ [%b,0x%B]
+" Flush right
 set statusline+=%=
-set statusline+=\ %{SyntasticStatuslineFlag()}
+" TODO: Should I set an ale statusline flag?
+"set statusline+=\ %{SyntasticStatuslineFlag()}
+" Git branch
 "set statusline+=\ %{fugitive#statusline()}
-set statusline+=\ [%{fugitive#head(5)}]
-set statusline+=\ %-14(%l,%c%V%)\ %p%%\ [%Ll]
+"set statusline+=\ [%{fugitive#head(5)}]
+set statusline+=\ %{fugitive#head(5)}
+" line number, column number AND virtual column number
+"set statusline+=\ %-14(%l,%c%V%)
+" column number AND virtual column number
+set statusline+=\ %c%V
+" Percent of file
+set statusline+=\ %p%%
+" Number of lines in file
+set statusline+=\ %Ll
+
 " Make status line second last - may be removed by setting to 0
 " Also necessary for fancy status lines
 set laststatus=2
-
-" Suffixes that get lower priority when doing tab completion for filenames.
-set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.fdb_latexmk,.lof,.lot,.lox,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.pdf,.ps,.eps,.jpg,.gif,.bmp,.svg,.png,.gz,.bz2,.zip,.rar
 
 " }
 
@@ -623,9 +810,10 @@ nnoremap ` '
 " Remapping esc (may also use <C-c> or <C-[>)
 " See also :help timeout
 inoremap ½ <Esc>
-inoremap ii <Esc>
-inoremap <S-CR> <ESC>
-
+"inoremap ii <Esc>
+" Apparently having issues remapping CR and backspace on OSX
+" This is great since it's where I need it the most (touch bar)
+"inoremap <S-CR> <ESC>
 
 " select the text just last pasted or edited :)
 nnoremap gp `[v`]
@@ -636,13 +824,25 @@ nnoremap <expr> gV    "`[".getregtype(v:register)[0]."`]"
 "nmap gx yiw/^\(sub\<bar>def\<bar>function\)\s\+<C-R>"<CR>
 
 " Quickly edit/reload the vimrc file
-nmap <silent> <leader>ev :e ~/.vimrc<CR>
-nmap <silent> <leader>sv :so ~/.vimrc<CR>
+"nmap <silent> <leader>ev :e ~/.vimrc<CR>
+"nmap <silent> <leader>sv :so ~/.vimrc<CR>
+" More crossplatform compatible
+" Note that there is also the $MYGVIMRC env var
+" See eg
+" https://stackoverflow.com/questions/2400264/is-it-possible-to-apply-vim-configurations-without-restarting
+nmap <silent> <leader>ev :e $MYVIMRC<CR>
+nmap <silent> <leader>sv :so $MYVIMRC<CR>
+
+" Toggle relative line numbers
+nnoremap <F6> :set relativenumber!<CR>
 
 " Insert timestamp
 " Prefer no am/pm
-inoremap <Leader>tt <C-R>=strftime("%a %b %d, %Y  %H:%M")<CR>
-nnoremap <Leader>tt "=strftime("%a %b %d, %Y  %H:%M")<CR>P
+inoremap <Leader>tt <C-R>=strftime("%Y-%m-%d %H:%M")<CR>
+nnoremap <Leader>tt "=strftime("%Y-%m-%d %H:%M")<CR>P
+" This will write weekday using current locale, so set locale as desired
+inoremap <Leader>tpt <C-R>=strftime("%a %b %d, %Y  %H:%M")<CR>
+nnoremap <Leader>tpt "=strftime("%a %b %d, %Y  %H:%M")<CR>P
 "inoremap <Leader>tt <C-R>=strftime("%a %b %d, %Y  %H:%M%p")<CR>
 "nnoremap <Leader>tt "=strftime("%a %b %d, %Y  %H:%M%p")<CR>P
 
@@ -667,6 +867,7 @@ nnoremap <Leader>td :Todo<CR>
 nmap ,e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Following are mappings I might use later.. :)
+" Note that it is not function keys..
 nmap <leader>f0 :set foldlevel=0<CR>
 nmap <leader>f1 :set foldlevel=1<CR>
 nmap <leader>f2 :set foldlevel=2<CR>
@@ -682,6 +883,12 @@ nmap <leader>f9 :set foldlevel=9<CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" List current buffers and wait for input on which buffer to go to
+nnoremap <leader>ls :ls<cr>:b<space>
+" List current buffers and wait for input to :bd (delete buffer(s))
+" To delete a range, do eg for buffers 2-7 :2,7bd
+nnoremap <leader>lsd :ls<cr>:bd<space>
+
 " Enter directory listing for the directory of the current buffer
 "map <leader>. :e %:p:h<CR>
 
@@ -695,8 +902,10 @@ vnoremap > >gv
 " http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
 " To do this automatically best to use:
 " autocmd BufEnter * lcd %:p:h
-nmap ,cd :cd %:p:h<CR>:pwd<CR>
-
+nmap <leader>cd :cd %:p:h<CR>:pwd<CR>
+" Change working directory to current project
+" Requires plugin vim-projectroot
+nmap <leader>cp :ProjectRootCD<cr>
 
 " Toggle line numbers
 " http://vim.wikia.com/wiki/Display_line_numbers
@@ -739,33 +948,35 @@ au BufNewFile,BufRead *.py
     \ set textwidth=79       |
     \ set expandtab          |
     \ set autoindent         |
-    \ set fileformat=unix
+    \ set fileformat=unix    |
+    \ let python_highlight_all=1
 
-" Python with virtualenv support
-" Note that we need to discern between whether vim is built with python 2 or 3
-let PYBUILD=system("vim --version | grep -oP '\+python3?\'")
-
-if (PYBUILD == "+python")
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
-endif
-
-if (PYBUILD == "+python3")
-py3 << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
-endif
+" TODO: NOT sure this is needed anymore?
+"" Python with virtualenv support
+"" Note that we need to discern between whether vim is built with python 2 or 3
+"let PYBUILD=system("vim --version | grep -oP '\+python3?\'")
+"
+"if (PYBUILD == "+python")
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
+"endif
+"
+"if (PYBUILD == "+python3")
+"py3 << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
+"endif
 
 " }
 
@@ -1051,13 +1262,13 @@ nnoremap ,to :TagbarOpen fj<CR>
 
 " FuzzyFinder {
 
-  nmap ,ff :FufFile<CR>
-  nmap ,fc :FufCoverageFile<CR>
-  " nmap ,fr :FufMruFile<CR>  " Does not exist??
-  nmap ,ft :FufTag<CR>
-  nmap ,fb :FufBuffer<CR>
-  nmap ,fj :FufJumpList<CR>
-  nmap ,fq :FufQuickfix<CR>
+  " nmap ,ff :FufFile<CR>
+  " nmap ,fc :FufCoverageFile<CR>
+  " " nmap ,fr :FufMruFile<CR>  " Does not exist??
+  " nmap ,ft :FufTag<CR>
+  " nmap ,fb :FufBuffer<CR>
+  " nmap ,fj :FufJumpList<CR>
+  " nmap ,fq :FufQuickfix<CR>
 
   " Following could also be remapped?
   "<CR> - opens in a previous window.
@@ -1072,7 +1283,58 @@ nnoremap ,to :TagbarOpen fj<CR>
 
 " }
 
+" fzf {
+
+" https://jesseleite.com/posts/2/its-dangerous-to-vim-alone-take-fzf
+
+" This is the default extra key bindings
+"  'ctrl-t': 'tab split'
+"  'ctrl-x': 'split'
+"  'ctrl-v': 'vsplit'
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+" Default fzf layout
+" - down / up / left / right
+let g:fzf_layout = { 'down': '~40%' }
+
+" Files
+nmap <Leader>ff :Files<CR>
+" Git tracked files
+nmap <Leader>FF :Gfiles<CR>
+" Buffers
+nmap <Leader>fb :Buffers<CR>
+" Buffer history
+nmap <Leader>fh :History<CR>
+" Tags in current buffer
+nmap ,<Leader>ft :BTags<CR>
+" Tags across project
+nmap <Leader>fT :Tags<CR>
+" Lines in buffer
+nmap <Leader>fl :BLines<CR>
+" Lines in all loaded buffers
+nmap <Leader>FL :Lines<CR>
+" Marked lines
+nmap <Leader>fm :Marks<CR>
+" Search using ag across project
+nmap <Leader>fa :Ag<Space>
+
+" }
+
+" vim-agriculture {
+" Note that this depends on fzf plugin
+nmap <Leader>f/ <Plug>AgRawSearch
+vmap <Leader>f/ <Plug>AgRawVisualSelection
+nmap <Leader>f* <Plug>AgRawWordUnderCursor
+" }
+
 " ack {
+
+" :Ack [options] {pattern} [{directories}]
+" Just like where you use :grep, :grepadd, :lgrep, and :lgrepadd, you can use
+" :Ack, :AckAdd, :LAck, and :LAckAdd respectively
 
 "" Provides following quickfix/error list shortcuts
 " ?    a quick summary of these keys, repeat to close
@@ -1098,8 +1360,6 @@ let g:ackhighlight = 1
 " Fold results in quickfix by file name
 " Note: Enabling this seems to influence (annoyingly!) how ALL folds work??!
 let g:ack_autofold_results = 0
-
-
 
 " }
 
@@ -1239,10 +1499,19 @@ let g:ack_autofold_results = 0
     " nnoremap <silent> <Leader>sc :SlimuxShellConfigure<CR>
 " }
 
+" vim-test {
+    " Recommended
+    nmap <silent> t<C-n> :TestNearest<CR>
+    nmap <silent> t<C-f> :TestFile<CR>
+    nmap <silent> t<C-s> :TestSuite<CR>
+    nmap <silent> t<C-l> :TestLast<CR>
+    nmap <silent> t<C-g> :TestVisit<CR>
+" }
+
 " python-mode {
 
 " Syntastic does my syntax checking for me
-let g:pymode_lint_on_write = 0
+"let g:pymode_lint_on_write = 0
 
 " }
 
@@ -1256,16 +1525,16 @@ let g:SimpylFold_docstring_preview = 1
 "let g:SimpylFold_fold_docstring = 0
 
 " Fold imports (default: 1)
-let g:SimpylFold_fold_import = 0
+let g:SimpylFold_fold_import = 1
 
 " Sometimes needed
-autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
+"autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
+"autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 
 " }
 
 " Nvim-R {
-  
+
 " }
 
 " vimwiki {
@@ -1298,24 +1567,168 @@ let g:vimwiki_html_header_numbering = 2
 
 " }
 
+" riv {
+
+" This doesn't seem to have effect. Illegal mapping on mac?
+"let g:riv_global_leader = '<M-E>'
+
+" }
+
 " simple-todo {
 
 " Disable default key bindings
-"let g:simple_todo_map_keys = 0
+let g:simple_todo_map_keys = 0
 
 " Map your keys
-"nmap <leader>i <Plug>(simple-todo-new)
+nmap <leader>i <Plug>(simple-todo-new-list-item)
+nmap <leader>I <Plug>(simple-todo-new-list-item-start-of-line)
 "nmap <leader>x <Plug>(simple-todo-complete)
 "nmap <leader>X <Plug>(simple-todo-uncomplete)
+nmap <leader>s <Plug>(simple-todo-mark-switch)
 
 " Define tick symbol (default is 'x')
-"let g:simple_todo_tick_symbol = 'X'
+let g:simple_todo_tick_symbol = 'X'
 
 " Define list symbol (default is '*') IS THIS DEPRECATED?
-"let g:simple_todo_list_symbol = '*'
+let g:simple_todo_list_symbol = '*'
+
+" }
+
+" comfortable-motion {
+
+" Not sure if these are even working..?
+let g:comfortable_motion_scroll_down_key = "j"
+let g:comfortable_motion_scroll_up_key = "k"
+" }
+
+" vim-projectroot {
+let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'build.xml']
+" }
+
+" ncm2 {
+
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=menuone,noselect,noinsert
+
+" supress the annoying 'match x of y', 'The only match' and 'Patter not found'
+" messages
+set shortmess+=c
+
+" CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
+inoremap <c-c> <ESC>
+
+" When the <Enter> key is pressed while the popup menu is visible, it only
+" hides the menu. Use this mapping to close the menu and also start a new line
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+
+" use <TAB> to select the popup menu:
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" make it FAST
+let ncm2#popup_delay = 5
+let ncm2#complete_length = [[1,1]]
+
+" Use fuzzy matcher
+let g:ncm2#matcher = 'substrfuzzy'
+" }
+
+" jedi-vim {
+
+let g:jedi#auto_initialization = 1
+
+" Using other mechanism for completion
+let g:jedi#completions_enabled = 0
+
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#smart_auto_mappings = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#completions_command = ""
+let g:jedi#show_call_signatures = "1"
+let g:jedi#show_call_signatures_delay = 0
+let g:jedi#use_tabs_not_buffers = 0
+let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode
+let g:jedi#enable_speed_debugging=0
+
+" Keyboard shortcuts
+let g:jedi#goto_command = "<leader>g"
+let g:jedi#goto_assignments_command = "<leader>a"
+let g:jedi#goto_definitions_command = "<leader>d"
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = "<leader>n"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<leader>r"
+
+" }
+
+" conoline {
+"
+" Enable
+" :ConoLineEnable
+" Disable
+" :ConoLineDisable
+" Toggle on/off
+" :ConoLineToggle
+"
+" " Enable by default
+" let g:conoline_auto_enable = 1
+" 
+" " Note that there are options for customizing colors
+" 
+" " Use normal colors in noemr/insert mode (ignore conoline if =1)
+" let g:conoline_use_colorscheme_default_normal=0
+" let g:conoline_use_colorscheme_default_insert=0
+" 
+" "" Defaults (_nr_ is for line number column)
+" " For dark colorschemes
+" " let g:conoline_color_normal_dark = 'guibg=#181818'
+" " let g:conoline_color_normal_nr_dark = 'guibg=#181818'
+" " let g:conoline_color_insert_dark = 'guibg=#000000'
+" " let g:conoline_color_insert_nr_dark = 'guibg=#000000'
+" "
+" " " For light colorschemes
+" " let g:conoline_color_normal_light = 'guibg=#eaeaea'
+" " let g:conoline_color_normal_nr_light = 'guibg=#eaeaea'
+" " let g:conoline_color_insert_light = 'guibg=#ffffff'
+" " let g:conoline_color_insert_nr_light = 'guibg=#ffffff'
+" 
+" " Dark colorschemes
+" let g:conoline_color_normal_dark = 'guibg=grey40'
+" let g:conoline_color_normal_nr_dark = 'guibg=darkgrey guifg=darkgrey ctermbg=darkgrey ctermbg=darkgrey'
+" " "let g:conoline_color_normal_nr_dark = 'gui=underline cterm=underline'
+" let g:conoline_color_insert_dark = 'guibg=grey40'
+" let g:conoline_color_insert_nr_dark = 'guibg=darkgrey guifg=darkgrey ctermbg=darkgrey ctermbg=darkgrey'
+
+" }
+
+" plantuml-previewer {
+
+augroup plantuml-previewer
+  " Clear group
+  au!
+
+  " Binary path
+  " This may only work when plantuml installed through homebrew?
+  au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = get(
+      \  matchlist(system('cat `which plantuml` | grep plantuml.jar'), '\v.*\s[''"]?(\S+plantuml\.jar).*'),
+      \  1,
+      \  0
+      \)
+
+  " Open browser with preview
+  au FileType plantuml nnoremap <F9> :PlantumlOpen<CR>
+
+  " Close browser with preview
+  au FileType plantuml nnoremap <F8> :PlantumlClose<CR>
+
+  " Save file (default: png)
+  " To manually save file with another format/name do
+  " eg :PlantumlSave myspecialdiagram.svg
+  au FileType plantuml nnoremap <F10> :PlantumlSave<CR>
+
+augroup END
 
 " }
 
 " }
-
 
