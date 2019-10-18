@@ -8,7 +8,8 @@
 " https://github.com/skwp/dotfiles
 " https://realpython
 
-"" Look into
+" Look into {
+
 " http://code.kawi.me/zeekay/dot-vim/src/e8679321ea83/vimrc
 "  For vim digraphs (displaying math and so on)
 " http://stackoverflow.com/questions/688265/math-symbols-in-vim
@@ -29,6 +30,8 @@
 " * rking/ag.vim – We have to search for a lot of stuff across a lot of files,
 "   Ag does it best.
 " * tpope/vim-surround
+
+" }
 
 " help {
 
@@ -73,6 +76,13 @@
 " if exists(':tnoremap')
 "   tnoremap <Esc> <C-\><C-n>
 " endif
+"
+"
+" debugging / finding faulty plugins {
+"
+" * https://vimways.org/2018/debugging-your-vim-config/
+"
+" }
 "
 " }
 
@@ -169,172 +179,124 @@
   " }
 " }
 
-" Plugins {
+" Packages and Plugins {
 
-  " vim-plug start {
-    """
-    """ REPLACING VUNDLE WITH VIM-PLUG FOR NOW
-    """ REPLACING PATHOGEN WITH VUNDLE FOR NOW
-    """
-    " Needed on some linux distros.
-    " see http://www.adamlowe.me/2009/12/vim-destroys-all-other-rails-editors.html
-    "filetype off
-    "call pathogen#runtime_append_all_bundles()
-    "call pathogen#helptags()
+  " Using minpac plugin/package manager, utilizing package system
+  " in vim 8 and neovim (look up exact versions..)
 
-    """
-    """ vim-plug addon manager
-    """
+  " prerequisites {
 
-    " Download plugin and put in autoload directory
-    " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    "     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  " Clone/download into opt
+  " git clone https://github.com/k-takata/minpac.git \
+  "     ~/.vim/pack/minpac/opt/minpac
+  " curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+  "     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    " Start plugin manager
-    call plug#begin('~/.vim/plugged')
+  "}
 
-    " Plug usage - Make sure you use single quotes
-    "
-    " " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-    " Plug 'junegunn/vim-easy-align'
-    "
-    " " Any valid git URL is allowed
-    " Plug 'https://github.com/junegunn/vim-github-dashboard.git'
-    "
-    " " Group dependencies, vim-snippets depends on ultisnips
-    " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-    "
-    " " On-demand loading
-    " Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-    " Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-    "
-    " " Using a non-master branch
-    " Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-    "
-    " " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-    " Plug 'fatih/vim-go', { 'tag': '*' }
-    "
-    " " Plugin options
-    " Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-    "
-    " " Plugin outside ~/.vim/plugged with post-update hook
-    " Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    "
-    " " Unmanaged plugin (manually installed and updated)
-    " Plug '~/my-prototype-plugin'
+  " Since minpac doesn't need to be loaded unless updating , installaing or
+  " cleaning plugins, we define a function to perform those tasks
+function! PackInit() abort
 
-    " Installing/Cleaning/Updating plugins:
-    " PlugInstall [name ...] [#threads]   Install plugins
-    " PlugUpdate [name ...] [#threads]    Install or update plugins
-    " PlugClean[!]   Remove unused directories (bang version will clean without prompt)
-    " PlugUpgrade    Upgrade vim-plug itself
-    " PlugStatus     Check the status of plugins
-    " PlugDiff       Examine changes from the previous update and the pending changes
-    " PlugSnapshot[!] [output path]       Generate script for restoring the current snapshot of the plugins
+  packadd minpac
 
-    """
-    """ vundle vim addon manager
-    """
-    "filetype off
-    "set rtp+=~/.vim/bundle/vundle/
-    "call vundle#rc()
-
-    "" let Vundle manage Vundle
-    "" required!
-    "" git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-    "Bundle 'gmarik/vundle'
-  " }
+  " Initialize minpac and add itself as package
+  " init with verbosity 3 to see minpac work
+  call minpac#init({'verbose': 3})
+  "call minpac#init()
+  " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
 
   " General {
-    Plug 'tpope/vim-sensible'
+    "call minpac#add('tpope/vim-sensible')
 
     " File tree
-    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+    call minpac#add('scrooloose/nerdtree', { 'on':  'NERDTreeToggle' })
 
     " Linting
-    " Plug 'scrooloose/syntastic'
+    " call minpac#add('scrooloose/syntastic')
     " TODO: Configure ale
-    Plug 'w0rp/ale'
+    call minpac#add('w0rp/ale')
 
     " CTags
-    Plug 'majutsushi/tagbar'
+    call minpac#add('majutsushi/tagbar')
 
     " Undo tree
-    Plug 'sjl/gundo.vim'
+    call minpac#add('sjl/gundo.vim')
 
     " Directory specific vim settings
     " Settings in file '.vimdir'. Always use setlocal.
     " See https://www.vim.org/scripts/script.php?script_id=1860
     " OR
     " Project folders
-    Plug 'dbakker/vim-projectroot'
+    "D call minpac#add('dbakker/vim-projectroot')
 
     " Lining up text and creating tables
     " Dependency for
     " * gabrielelana/vim-markdown
-    Plug 'godlygeek/tabular'
+    "D call minpac#add('godlygeek/tabular')
 
     " Increment/decrement dates, times and more with CTRL-A/CTRL-X
-    Plug 'tpope/vim-speeddating'
+    "D call minpac#add('tpope/vim-speeddating')
 
     " Calendar
-    Plug 'mattn/calendar-vim'
+    "D call minpac#add('mattn/calendar-vim')
 
     " Open UIR in browser
     " Dependency for
     " * weirongxu/plantuml-previewer
-    Plug 'tyru/open-browser.vim'
+    call minpac#add('tyru/open-browser.vim')
 
     " A plugin to help write plugins (or just vim development)
-    Plug 'tpope/vim-scriptease'
+    call minpac#add('tpope/vim-scriptease')
   " }
 
   " Generic code manipulation {
 
     " Comment / comment out
-    "Plug 'scrooloose/nerdcommenter'
-    Plug 'tpope/vim-commentary'
+    "call minpac#add('scrooloose/nerdcommenter')
+    call minpac#add('tpope/vim-commentary')
 
     " Parantheses, structural elements, ..
-    Plug 'tpope/vim-surround'
-    "Plug Raimondi/delimitMate
+    call minpac#add('tpope/vim-surround')
+    "call minpac#add(Raimondi/delimitMate)
 
     " Work with an isolated segment of code
-    Plug 'chrisbra/NrrwRgn'
+    call minpac#add('chrisbra/NrrwRgn')
 
     " Allow repeating of maps
     " Also helpful/necessary for some plugins;
     " * vim-surround
-    Plug 'tpope/vim-repeat'
+    call minpac#add('tpope/vim-repeat')
   " }
 
   " Moving / finding {
-    
+
     " Fuzzy matching
-    "Plug 'vim-scripts/FuzzyFinder' | Plug 'vim-scripts/L9'
-    "Plug 'ctrlpvim/ctrlp.vim'
+    "call minpac#add('vim-scripts/FuzzyFinder' | call minpac#add('vim-scripts/L9'))
+    "call minpac#add('ctrlpvim/ctrlp.vim')
     " Note that we could also use fzf if already installed, see github
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    Plug 'junegunn/fzf.vim'
+    call minpac#add('junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' })
+    call minpac#add('junegunn/fzf.vim')
     " This allows us to use Ag while defining own escapes
     " https://jesseleite.com/posts/4/project-search-your-feelings
     " https://vimawesome.com/plugin/vim-agriculture
-    Plug 'jesseleite/vim-agriculture'
+    "D call minpac#add('jesseleite/vim-agriculture')
 
     " Grep replacement
-    Plug 'mileszs/ack.vim'
-  
+    call minpac#add('mileszs/ack.vim')
+
     " Comfortable "physics-based" motion
-    Plug 'yuttie/comfortable-motion.vim'
+    call minpac#add('yuttie/comfortable-motion.vim')
 
   " }
 
   " Snippets {
-    "Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+    "call minpac#add('SirVer/ultisnips' | call minpac#add('honza/vim-snippets'))
   " }
 
   " Faster folding {
-    Plug 'konfekt/fastfold'
+    call minpac#add('konfekt/fastfold')
   " }
 
   " Completion {
@@ -345,165 +307,176 @@
     " * --gocode-completer (requires go)
     " * --tern-completer (requires npm)
     " * --all
-    "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --all' }
-    "Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' }
+    "call minpac#add('Valloric/YouCompleteMe', { 'do': './install.py --all' })
+    "call minpac#add('Valloric/YouCompleteMe', { 'do': './install.py --clang-completer --tern-completer' })
 
     " Supertab
-    "Plug 'ervandew/supertab'
+    "call minpac#add('ervandew/supertab')
 
     " ncm2
     " Currently using a forked version that doesn't bother with eg type and
     " description (jedi with python code) because it is faster for big
     " libraries
-    if has('nvim')
-      Plug 'roxma/nvim-yarp'  " dependency of ncm2
-      Plug 'ncm2/ncm2'  " awesome autocomplete plugin
-      " Plug 'HansPinckaers/ncm2-jedi'  " fast python completion (use ncm2 if you want type info or snippet support)
-      Plug 'ncm2/ncm2-bufword'  " buffer keyword completion
-      Plug 'ncm2/ncm2-path'  " filepath completion
-    endif
+    "D if has('nvim')
+    "D   call minpac#add('roxma/nvim-yarp'  " dependency of ncm2)
+    "D   call minpac#add('ncm2/ncm2'  " awesome autocomplete plugin)
+    "D   " call minpac#add('HansPinckaers/ncm2-jedi'  " fast python completion (use ncm2 if you want type info or snippet support))
+    "D   call minpac#add('ncm2/ncm2-bufword'  " buffer keyword completion)
+    "D   call minpac#add('ncm2/ncm2-path'  " filepath completion)
+    "D endif
+
+    " deoplete
+    call minpac#add('Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' })
   " }
 
   " tmux {
   " Note: slimux is apparently broken for tmux <2.0 after commit 0ff0e9b ?
   " https://github.com/epeli/slimux/issues/56
-    "Plug 'epeli/slimux', { 'commit': '0ff0e9b' }
-    "Plug 'epeli/slimux'
+    "call minpac#add('epeli/slimux', { 'commit': '0ff0e9b' })
+    "call minpac#add('epeli/slimux')
   " }
   "
   " VCS systems {
-    Plug 'tpope/vim-fugitive'
-    Plug 'mhinz/vim-signify'
+    call minpac#add('tpope/vim-fugitive')
+    call minpac#add('mhinz/vim-signify')
   " }
 
   " Testing {
-    Plug 'janko/vim-test'
+    call minpac#add('janko/vim-test')
 
   " }
 
   " Ordered text files {
-    Plug 'vim-scripts/csv.vim', { 'for': 'csv' }
-    Plug 'elzr/vim-json'
+    call minpac#add('vim-scripts/csv.vim', { 'for': 'csv' })
+    call minpac#add('elzr/vim-json')
   " }
 
   " Perl {
-    "Plug 'perl-support.vim', { 'for': 'perl' }
+    "call minpac#add('perl-support.vim', { 'for': 'perl' })
   " }
 
   " c/c++ {
-    "Plug 'vim-scripts/c.vim'
+    "call minpac#add('vim-scripts/c.vim')
   " }
 
   " LaTeX {
-    "Plug 'vim-scripts/LaTeX-Box'
-    "Plug 'vim-scripts/TeX-9'
-    "Plug 'vim-scripts/AutomaticTexPlugin'
+    "call minpac#add('vim-scripts/LaTeX-Box')
+    "call minpac#add('vim-scripts/TeX-9')
+    "call minpac#add('vim-scripts/AutomaticTexPlugin')
   " }
 
   " Python {
-    " Plug 'klen/python-mode', { 'for': 'python' }
-    Plug 'vim-scripts/indentpython.vim', { 'for': 'python' }
-    Plug 'nvie/vim-flake8', { 'for': 'python' }
-    Plug 'tmhedberg/SimpylFold', { 'for': 'python' }
-    Plug 'davidhalter/jedi-vim', { 'for': 'python', 'do': 'pip install jedi' }
+    " call minpac#add('klen/python-mode', { 'for': 'python' })
+    call minpac#add('vim-scripts/indentpython.vim', { 'for': 'python' })
+    call minpac#add('nvie/vim-flake8', { 'for': 'python' })
+    call minpac#add('tmhedberg/SimpylFold', { 'for': 'python' })
+    " jedi-vim - remember to `pip install jedi`
+    call minpac#add('davidhalter/jedi-vim', { 'for': 'python', 'do': 'pip install jedi' })
+    call minpac#add('zchee/deoplete-jedi')
   " }
 
   " JavaScript {
 
-    " Syntax support
-    "Plug 'pangloss/vim-javascript'
-    Plug 'othree/yajs', { 'for': 'javascript' }
+    "D " Syntax support
+    "D "call minpac#add('pangloss/vim-javascript')
+    "D call minpac#add('othree/yajs', { 'for': 'javascript' })
 
-    " JSDoc syntax highlighting
-    Plug 'othree/jsdoc-syntax.vim', { 'for': 'javascript' }
+    "D " JSDoc syntax highlighting
+    "D call minpac#add('othree/jsdoc-syntax.vim', { 'for': 'javascript' })
 
-    " Support for JavaScript libraries jQuery, lodash, React, Handlebars,
-    " Chai, etc.
-    Plug 'othree/javascript-libraries-syntax.vim', { 'for': 'javascript' }
+    "D " Support for JavaScript libraries jQuery, lodash, React, Handlebars,
+    "D " Chai, etc.
+    "D call minpac#add('othree/javascript-libraries-syntax.vim', { 'for': 'javascript' })
 
-    " JavaScript indentation
-    Plug 'gavocanov/vim-js-indent', { 'for': 'javascript' }
+    "D " JavaScript indentation
+    "D call minpac#add('gavocanov/vim-js-indent', { 'for': 'javascript' })
 
-    " JSX syntax highlighting
-    Plug 'mxw/vim-jsx', { 'for': 'javascript' }
+    "D " JSX syntax highlighting
+    "D call minpac#add('mxw/vim-jsx', { 'for': 'javascript' })
 
-    " Insert JSDoc comments
-    Plug 'heavenshell/vim-jsdoc', { 'for': 'javascript' }
+    "D " Insert JSDoc comments
+    "D call minpac#add('heavenshell/vim-jsdoc', { 'for': 'javascript' })
 
-    " Completion
-    Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
-    " Completion of common function parameters
-    Plug 'othree/jspc.vim'
+    "D " Completion
+    "D call minpac#add('marijnh/tern_for_vim', { 'do': 'npm install' })
+    "D " Completion of common function parameters
+    "D call minpac#add('othree/jspc.vim')
 
   " }
 
   " NodeJS {
     " Syntax support
-    Plug 'moll/vim-node'
+    call minpac#add('moll/vim-node')
   " }
 
   " Ruby {
-    Plug 'vim-scripts/rails.vim'
+    call minpac#add('vim-scripts/rails.vim')
   " }
 
   " R {
-    "Plug 'vim-scripts/vim-R-plugin.git', {'for': 'r'}
-    Plug 'jalvesaq/Nvim-R', {'for': 'r'}
+    "call minpac#add('vim-scripts/vim-R-plugin.git', {'for': 'r'})
+    call minpac#add('jalvesaq/Nvim-R', {'for': 'r'})
   " }
 
   " Text, wiki, markup, diagram, notes, diary {
-  
+
     " Wiki, todo, markdown
-    "Plug 'vimwiki/vimwiki'
+    "call minpac#add('vimwiki/vimwiki')
 
     " Simple todo support
     " Alternative is vimwiki for todo support (in wiki/markdown)
-    "Plug 'vitalk/vim-simple-todo'
+    "call minpac#add('vitalk/vim-simple-todo')
 
     " Markdown
     " Currently using vimwiki to format markdown. Other powerful plugins:
     " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
-    "Plug 'gabrielelana/vim-markdown', {'for': 'markdown'}
-    "Plug 'plasticboy/vim-markdown', {'for': 'markdown'}
+    "call minpac#add('gabrielelana/vim-markdown', {'for': 'markdown'})
+    "call minpac#add('plasticboy/vim-markdown', {'for': 'markdown'})
 
     " RestructuredText
     " See also:
     " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
     " * https://github.com/gu-fan/InstantRst
-    "Plug 'Rykka/riv.vim'
-    Plug 'gu-fan/riv.vim'
+    "call minpac#add('Rykka/riv.vim')
+    call minpac#add('gu-fan/riv.vim')
 
     " Plantuml
     " Previewing
-    Plug 'weirongxu/plantuml-previewer.vim'
+    call minpac#add('weirongxu/plantuml-previewer.vim')
     " Syntax - isn't this built-in?? Note that first line has to contain
     " with @startuml
-    Plug 'aklt/plantuml-syntax'
+    call minpac#add('aklt/plantuml-syntax')
 
   " }
 
   " Color scheme {
-    Plug 'altercation/vim-colors-solarized'
-    Plug 'jnurmine/Zenburn'
+    call minpac#add('altercation/vim-colors-solarized')
+    call minpac#add('jnurmine/Zenburn')
   " }
 
   " Highlight current line, depending on colors from theme
   " Not usable (except for line number column) when using colorscheme?
-  "Plug 'miyakogi/conoline.vim'
+  "call minpac#add('miyakogi/conoline.vim')
 
   " Status line {
   " Currently using own custom statusline
   "
-    "Plug 'powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'}
-    "Plug 'powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'}
-    "Plug 'itchyny/lightline.vim'
+    "call minpac#add('powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'})
+    "call minpac#add('powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'})
+    "call minpac#add('itchyny/lightline.vim')
   " }
 
-  " vim-plug end {
-  "
-    " Add plugins to &runtimepath
-    call plug#end()
-  " }
+
+endfunction
+
+" Define user commands for updating/cleaning the plugins.
+" Each of them calls PackInit() to load minpac and register
+" the information of plugins, then performs the task.
+command! PackUpdate call PackInit() | call minpac#update('', {'do': 'call minpac#status()'})
+command! PackClean  call PackInit() | call minpac#clean()
+command! PackStatus call PackInit() | call minpac#status()
+
+
 " }
 
 " { General settings
@@ -1605,33 +1578,33 @@ let g:comfortable_motion_scroll_up_key = "k"
 let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'build.xml']
 " }
 
-" ncm2 {
-
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=menuone,noselect,noinsert
-
-" supress the annoying 'match x of y', 'The only match' and 'Patter not found'
-" messages
-set shortmess+=c
-
-" CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-inoremap <c-c> <ESC>
-
-" When the <Enter> key is pressed while the popup menu is visible, it only
-" hides the menu. Use this mapping to close the menu and also start a new line
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-
-" use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" make it FAST
-let ncm2#popup_delay = 5
-let ncm2#complete_length = [[1,1]]
-
-" Use fuzzy matcher
-let g:ncm2#matcher = 'substrfuzzy'
-" }
+"D " ncm2 {
+"D 
+"D autocmd BufEnter * call ncm2#enable_for_buffer()
+"D set completeopt=menuone,noselect,noinsert
+"D 
+"D " supress the annoying 'match x of y', 'The only match' and 'Patter not found'
+"D " messages
+"D set shortmess+=c
+"D 
+"D " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
+"D inoremap <c-c> <ESC>
+"D 
+"D " When the <Enter> key is pressed while the popup menu is visible, it only
+"D " hides the menu. Use this mapping to close the menu and also start a new line
+"D inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+"D 
+"D " use <TAB> to select the popup menu:
+"D inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+"D inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"D 
+"D " make it FAST
+"D let ncm2#popup_delay = 5
+"D let ncm2#complete_length = [[1,1]]
+"D 
+"D " Use fuzzy matcher
+"D let g:ncm2#matcher = 'substrfuzzy'
+"D " }
 
 " jedi-vim {
 
@@ -1728,6 +1701,10 @@ augroup plantuml-previewer
 
 augroup END
 
+" }
+
+" deoplete {
+let g:deoplete#enable_at_startup = 1
 " }
 
 " }
