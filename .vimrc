@@ -167,7 +167,8 @@
     "set nocompatible    " Use Vim defaults instead of 100% vi compatibility
     "set backspace=indent,eol,start  " more powerful backspacing
 
-    " Python versions for neovim (and vim?)
+    " Python versions for neovim
+    " TODO: also vim?
     " https://neovim.io/doc/user/provider.html#provider-python
     if has('nvim')
       "let g:python_host_prog = '/usr/local/bin/python'
@@ -181,8 +182,8 @@
 
 " Packages and Plugins {
 
-  " Using minpac plugin/package manager, utilizing package system
-  " in vim 8 and neovim (look up exact versions..)
+" Using minpac plugin/package manager, utilizing package system
+" in vim 8 and neovim (look up exact versions..)
 
   " prerequisites {
 
@@ -194,8 +195,8 @@
 
   "}
 
-  " Since minpac doesn't need to be loaded unless updating , installaing or
-  " cleaning plugins, we define a function to perform those tasks
+" Since minpac doesn't need to be loaded unless updating , installaing or
+" cleaning plugins, we define a function to perform those tasks
 function! PackInit() abort
 
   packadd minpac
@@ -206,6 +207,8 @@ function! PackInit() abort
   "call minpac#init()
   " minpac must have {'type': 'opt'} so that it can be loaded with `packadd`
   call minpac#add('k-takata/minpac', {'type': 'opt'})
+
+  " Plugins {
 
   " General {
     "call minpac#add('tpope/vim-sensible')
@@ -289,14 +292,12 @@ function! PackInit() abort
     " Comfortable "physics-based" motion
     call minpac#add('yuttie/comfortable-motion.vim')
 
+    " Faster folding
+    call minpac#add('konfekt/fastfold')
   " }
 
   " Snippets {
     "call minpac#add('SirVer/ultisnips' | call minpac#add('honza/vim-snippets'))
-  " }
-
-  " Faster folding {
-    call minpac#add('konfekt/fastfold')
   " }
 
   " Completion {
@@ -326,7 +327,13 @@ function! PackInit() abort
     "D endif
 
     " deoplete
-    call minpac#add('Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' })
+    if has('nvim')
+      call minpac#add('Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' })
+    else
+      call minpac#add('Shougo/deoplete.nvim')
+      call minpac#add('roxma/nvim-yarp')
+      call minpac#add('roxma/vim-hug-neovim-rpc')
+    endif
   " }
 
   " tmux {
@@ -335,16 +342,21 @@ function! PackInit() abort
     "call minpac#add('epeli/slimux', { 'commit': '0ff0e9b' })
     "call minpac#add('epeli/slimux')
   " }
-  "
+
   " VCS systems {
     call minpac#add('tpope/vim-fugitive')
     call minpac#add('mhinz/vim-signify')
   " }
 
   " Testing {
+    " Run code test framework, on specific code parts, from within vim
     call minpac#add('janko/vim-test')
-
   " }
+
+  " File type specific {
+  "
+  " Note that most of these are optional and thus only loaded when relevant
+  " filetype is in buffer
 
   " Ordered text files {
     call minpac#add('vim-scripts/csv.vim', { 'for': 'csv' })
@@ -366,13 +378,13 @@ function! PackInit() abort
   " }
 
   " Python {
-    " call minpac#add('klen/python-mode', { 'for': 'python' })
-    call minpac#add('vim-scripts/indentpython.vim', { 'for': 'python' })
-    call minpac#add('nvie/vim-flake8', { 'for': 'python' })
-    call minpac#add('tmhedberg/SimpylFold', { 'for': 'python' })
-    " jedi-vim - remember to `pip install jedi`
-    call minpac#add('davidhalter/jedi-vim', { 'for': 'python', 'do': 'pip install jedi' })
-    call minpac#add('zchee/deoplete-jedi')
+    " call minpac#add('klen/python-mode', {'type': 'opt'})
+    call minpac#add('vim-scripts/indentpython.vim', {'type': 'opt'})
+    call minpac#add('nvie/vim-flake8', {'type': 'opt'})
+    call minpac#add('tmhedberg/SimpylFold', {'type': 'opt'})
+    " jedi-vim - remember to `pip install jedi` in relevant python env
+    call minpac#add('davidhalter/jedi-vim', {'type': 'opt', 'do': 'pip install jedi' })
+    call minpac#add('zchee/deoplete-jedi', {'type': 'opt'})
   " }
 
   " JavaScript {
@@ -449,23 +461,27 @@ function! PackInit() abort
 
   " }
 
-  " Color scheme {
+  " } No more file type specifics
+
+  " Color scheme, status line, .. {
+
+    " Color scheme
     call minpac#add('altercation/vim-colors-solarized')
     call minpac#add('jnurmine/Zenburn')
-  " }
 
-  " Highlight current line, depending on colors from theme
-  " Not usable (except for line number column) when using colorscheme?
-  "call minpac#add('miyakogi/conoline.vim')
+    " Highlight current line, depending on colors from theme
+    " Not usable (except for line number column) when using colorscheme?
+    "call minpac#add('miyakogi/conoline.vim')
 
-  " Status line {
-  " Currently using own custom statusline
-  "
+    " Status line
+    " Currently using own custom statusline
     "call minpac#add('powerline/powerline', {'rtp': 'powerline/bindings/vim/', 'do': 'pip install powerline-status'})
     "call minpac#add('powerline/powerline', {'do': 'pip install powerline-status', 'branch': 'develop'})
     "call minpac#add('itchyny/lightline.vim')
+
   " }
 
+  " } No more plugins :)
 
 endfunction
 
@@ -480,9 +496,6 @@ command! PackStatus call PackInit() | call minpac#status()
 " }
 
 " { General settings
-
-""" NOTE: Using vim-sensible plugin to do most of my general settings but
-"""       left some of old setup commented out.
 
 " Encoding should be utf-8 ..
 set encoding=utf-8
@@ -913,45 +926,7 @@ nmap <C-Left> :cprev<CR>
 " http://learnvimscriptthehardway.stevelosh.com/chapters/14.html
 " Or perhaps collecting in functions
 
-" Python {
-au BufNewFile,BufRead *.py
-    \ set tabstop=4          |
-    \ set softtabstop=4      |
-    \ set shiftwidth=4       |
-    \ set textwidth=79       |
-    \ set expandtab          |
-    \ set autoindent         |
-    \ set fileformat=unix    |
-    \ let python_highlight_all=1
-
-" TODO: NOT sure this is needed anymore?
-"" Python with virtualenv support
-"" Note that we need to discern between whether vim is built with python 2 or 3
-"let PYBUILD=system("vim --version | grep -oP '\+python3?\'")
-"
-"if (PYBUILD == "+python")
-"py << EOF
-"import os
-"import sys
-"if 'VIRTUAL_ENV' in os.environ:
-"  project_base_dir = os.environ['VIRTUAL_ENV']
-"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-"  execfile(activate_this, dict(__file__=activate_this))
-"EOF
-"endif
-"
-"if (PYBUILD == "+python3")
-"py3 << EOF
-"import os
-"import sys
-"if 'VIRTUAL_ENV' in os.environ:
-"  project_base_dir = os.environ['VIRTUAL_ENV']
-"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-"  execfile(activate_this, dict(__file__=activate_this))
-"EOF
-"endif
-
-" }
+" NOTE: Most of this is done in scripts under .vim/ftplugin
 
 " Web {
 au BufNewFile,BufRead *.js, *.html, *.css
@@ -1020,12 +995,6 @@ au BufNewFile,BufRead *.txt
 " Toggle paste mode
 " set pastetoggle=<S-F2>
 
-""" Code folding options
-"" Now using SimpylFold for folding python code
-"au FileType python set foldmethod=indent
-"au FileType python set foldnestmax=2
-
-
 " META key doesn't seem optimal here..
 "map <C-W><M-h> :call MoveBuf("h")<CR>
 "map <C-W><M-l> :call MoveBuf("l")<CR>
@@ -1038,32 +1007,6 @@ au BufNewFile,BufRead *.txt
 "map <C-W><C-j> :call MoveBuf("j")<CR>
 "map <C-W><C-k> :call MoveBuf("k")<CR>
 
-
-"""
-""" Send lines to screen window
-"""
-
-" The following commands may also be global (g:) but local takes preference
-" b:sendToProgramName  send2screen.py command
-" b:sendToProgramMode  ipython or blank
-" b:sendSkipBlankLines Do not send blank lines if this is 1
-
-"" Send to screen
-" Something is not working here anymore..
-" Trying to use screen plugin instead (that plugin may be culprit)
-" Nah.. Using slimux and tmux instead
-"nnoremap <F9> : . python send()<CR>
-"vnoremap <F9> : python send()<CR>
-"" Python
-"autocmd FileType python let b:sendToProgramMode="ipython"
-""autocmd FileType python let b:sendToProgramName="send2screen.py -p ipython"
-""autocmd FileType python let b:sendToProgramName="send2screen.py -S work -p ipython"
-"" R
-"autocmd FileType python let b:sendToProgramMode=''
-""autocmd Filetype r let b:sendToProgramName="send2screen.py -p R"
-"autocmd Filetype r let b:sendToProgramName="send2screen.py -S work -p R"
-""autocmd Filetype r let b:sendSkipBlankLines=0
-
 """
 """ Tags and autocompletion
 """
@@ -1071,7 +1014,6 @@ au BufNewFile,BufRead *.txt
 " NEWLY COMMENTED OUT
 "" Autocompletion
 "" Not sure about perl and ruby
-"autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 "autocmd FileType perl setlocal omnifunc=perlcomplete#CompletePERL
 "autocmd FileType ruby setlocal omnifunc=rubycomplete#CompleteRUBY
 "autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
@@ -1104,26 +1046,17 @@ au BufNewFile,BufRead *.txt
 "au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
 "set completeopt=menuone,menu,longest,preview
 
-"" pydiction stuff (only 6.0?)
-"if has("autocmd")
-  "autocmd FileType python set complete+=k/home/brian/data/pydiction isk+=.,(
-"endif " has("autocmd")
 
 """""""""""""""""""""""""""""
 """ GENERAL MAPPINGS
 """""""""""""""""""""""""""""
 
-
-
 "}
 
 " Plugin configuration {
 
-" NERDTree {
-  map <F2> :NERDTreeToggle<CR>
-  let NERDTreeShowBookmarks=1
-  let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
-" }
+" Plugin configuration is now largely done in separate scripts under
+" .vim/after/plugin or .vim/plugin
 
 " Tagbar {
 
@@ -1606,34 +1539,6 @@ let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'b
 "D let g:ncm2#matcher = 'substrfuzzy'
 "D " }
 
-" jedi-vim {
-
-let g:jedi#auto_initialization = 1
-
-" Using other mechanism for completion
-let g:jedi#completions_enabled = 0
-
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#smart_auto_mappings = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#completions_command = ""
-let g:jedi#show_call_signatures = "1"
-let g:jedi#show_call_signatures_delay = 0
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#show_call_signatures_modes = 'i'  " ni = also in normal mode
-let g:jedi#enable_speed_debugging=0
-
-" Keyboard shortcuts
-let g:jedi#goto_command = "<leader>g"
-let g:jedi#goto_assignments_command = "<leader>a"
-let g:jedi#goto_definitions_command = "<leader>d"
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>n"
-let g:jedi#completions_command = "<C-Space>"
-let g:jedi#rename_command = "<leader>r"
-
-" }
-
 " conoline {
 "
 " Enable
@@ -1701,10 +1606,6 @@ augroup plantuml-previewer
 
 augroup END
 
-" }
-
-" deoplete {
-let g:deoplete#enable_at_startup = 1
 " }
 
 " }
