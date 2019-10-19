@@ -55,7 +55,7 @@
 
 " }
 
-" modifying this file {
+" configuring vim {
 "
 "" Using vim/neovim?
 "
@@ -86,7 +86,7 @@
 "
 " }
 
-" develop {
+" vim/vim-script develop {
 
 "" VIM variable namespaces
 "             (nothing):  In a function: local to a function; otherwise: global
@@ -128,6 +128,10 @@
 " :sign place
 " eclim uses signs that may annoy. disable with
 " :let g:EclimSignLevel = 0
+
+" echo/print to user
+" :echo         - echoes messages
+" :echomsg      - echoes message and saves in message-history
 
 "" DEBUGGING VIM/VIM-SCRIPTS/VIM-SETTINGS
 " Set verbose level to something high (max 15) and use verbosefile
@@ -359,22 +363,22 @@ function! PackInit() abort
   " filetype is in buffer
 
   " Ordered text files {
-    call minpac#add('vim-scripts/csv.vim', { 'for': 'csv' })
-    call minpac#add('elzr/vim-json')
+    call minpac#add('vim-scripts/csv.vim', {'type': 'opt'})
+    call minpac#add('elzr/vim-json', {'type': 'opt'})
   " }
 
   " Perl {
-    "call minpac#add('perl-support.vim', { 'for': 'perl' })
+    "call minpac#add('perl-support.vim', {'type': 'opt'})
   " }
 
   " c/c++ {
-    "call minpac#add('vim-scripts/c.vim')
+    "call minpac#add('vim-scripts/c.vim', {'type': 'opt'})
   " }
 
   " LaTeX {
-    "call minpac#add('vim-scripts/LaTeX-Box')
-    "call minpac#add('vim-scripts/TeX-9')
-    "call minpac#add('vim-scripts/AutomaticTexPlugin')
+    "call minpac#add('vim-scripts/LaTeX-Box', {'type': 'opt'})
+    "call minpac#add('vim-scripts/TeX-9', {'type': 'opt'})
+    "call minpac#add('vim-scripts/AutomaticTexPlugin', {'type': 'opt'})
   " }
 
   " Python {
@@ -390,74 +394,74 @@ function! PackInit() abort
   " JavaScript {
 
     "D " Syntax support
-    "D "call minpac#add('pangloss/vim-javascript')
-    "D call minpac#add('othree/yajs', { 'for': 'javascript' })
+    "D "call minpac#add('pangloss/vim-javascript', {'type': 'opt'})
+    "D call minpac#add('othree/yajs', {'type': 'opt'})
 
     "D " JSDoc syntax highlighting
-    "D call minpac#add('othree/jsdoc-syntax.vim', { 'for': 'javascript' })
+    "D call minpac#add('othree/jsdoc-syntax.vim', {'type': 'opt'})
 
     "D " Support for JavaScript libraries jQuery, lodash, React, Handlebars,
     "D " Chai, etc.
-    "D call minpac#add('othree/javascript-libraries-syntax.vim', { 'for': 'javascript' })
+    "D call minpac#add('othree/javascript-libraries-syntax.vim', {'type': 'opt'})
 
     "D " JavaScript indentation
-    "D call minpac#add('gavocanov/vim-js-indent', { 'for': 'javascript' })
+    "D call minpac#add('gavocanov/vim-js-indent', {'type': 'opt'})
 
     "D " JSX syntax highlighting
-    "D call minpac#add('mxw/vim-jsx', { 'for': 'javascript' })
+    "D call minpac#add('mxw/vim-jsx', {'type': 'opt'})
 
     "D " Insert JSDoc comments
-    "D call minpac#add('heavenshell/vim-jsdoc', { 'for': 'javascript' })
+    "D call minpac#add('heavenshell/vim-jsdoc', {'type': 'opt'})
 
     "D " Completion
-    "D call minpac#add('marijnh/tern_for_vim', { 'do': 'npm install' })
+    "D call minpac#add('marijnh/tern_for_vim', {'type': 'opt', 'do': 'npm install'})
     "D " Completion of common function parameters
-    "D call minpac#add('othree/jspc.vim')
+    "D call minpac#add('othree/jspc.vim', {'type': 'opt'})
 
   " }
 
   " NodeJS {
     " Syntax support
-    call minpac#add('moll/vim-node')
+    "call minpac#add('moll/vim-node', {'type': 'opt'})
   " }
 
   " Ruby {
-    call minpac#add('vim-scripts/rails.vim')
+    "call minpac#add('vim-scripts/rails.vim', {'type': 'opt'})
   " }
 
   " R {
-    "call minpac#add('vim-scripts/vim-R-plugin.git', {'for': 'r'})
-    call minpac#add('jalvesaq/Nvim-R', {'for': 'r'})
+    "call minpac#add('vim-scripts/vim-R-plugin.git', {'type': 'opt'})
+    call minpac#add('jalvesaq/Nvim-R', {'type': 'opt'})
   " }
 
   " Text, wiki, markup, diagram, notes, diary {
 
     " Wiki, todo, markdown
-    "call minpac#add('vimwiki/vimwiki')
+    "call minpac#add('vimwiki/vimwiki', {'type': 'opt'})
 
     " Simple todo support
     " Alternative is vimwiki for todo support (in wiki/markdown)
-    "call minpac#add('vitalk/vim-simple-todo')
+    "call minpac#add('vitalk/vim-simple-todo', {'type': 'opt'})
 
     " Markdown
     " Currently using vimwiki to format markdown. Other powerful plugins:
     " http://vimawesome.com/plugin/vim-markdown-sad-beautiful-tragic
-    "call minpac#add('gabrielelana/vim-markdown', {'for': 'markdown'})
-    "call minpac#add('plasticboy/vim-markdown', {'for': 'markdown'})
+    "call minpac#add('gabrielelana/vim-markdown', {'type': 'opt'})
+    "call minpac#add('plasticboy/vim-markdown', {'type': 'opt'})
 
     " RestructuredText
     " See also:
     " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
     " * https://github.com/gu-fan/InstantRst
-    "call minpac#add('Rykka/riv.vim')
-    call minpac#add('gu-fan/riv.vim')
+    "call minpac#add('Rykka/riv.vim', {'type': 'opt'})
+    call minpac#add('gu-fan/riv.vim', {'type': 'opt'})
 
     " Plantuml
     " Previewing
-    call minpac#add('weirongxu/plantuml-previewer.vim')
+    call minpac#add('weirongxu/plantuml-previewer.vim', {'type': 'opt'})
     " Syntax - isn't this built-in?? Note that first line has to contain
     " with @startuml
-    call minpac#add('aklt/plantuml-syntax')
+    call minpac#add('aklt/plantuml-syntax', {'type': 'opt'})
 
   " }
 
@@ -930,22 +934,22 @@ nmap <C-Left> :cprev<CR>
 
 " Web {
 au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2          |
-    \ set softtabstop=2      |
-    \ set shiftwidth=2
+    \ setlocal tabstop=2          |
+    \ setlocal softtabstop=2      |
+    \ setlocal shiftwidth=2
 " }
 
 " notes {
 " Note that I am using plugins for markdown and restructuredtext so not
 " including *.md or *.rst here
-au BufNewFile,BufRead *.txt
-    \ set tabstop=4          |
-    \ set softtabstop=4      |
-    \ set shiftwidth=4       |
-    \ set textwidth=79       |
-    \ set expandtab          |
-    \ set autoindent         |
-    \ set fileformat=unix
+"au BufNewFile,BufRead *.txt
+"    \ setlocal tabstop=4          |
+"    \ setlocal softtabstop=4      |
+"    \ setlocal shiftwidth=4       |
+"    \ setlocal textwidth=79       |
+"    \ setlocal expandtab          |
+"    \ setlocal autoindent         |
+"    \ setlocal fileformat=unix
 
 " }
 
@@ -1421,28 +1425,6 @@ let g:ack_autofold_results = 0
 
 " }
 
-" SimpylFold {
-
-" Enable previewing of your folded classes' and functions' docstrings in the
-" fold text (default: 0)
-let g:SimpylFold_docstring_preview = 1
-
-" Fold docstrings (default: 1)
-"let g:SimpylFold_fold_docstring = 0
-
-" Fold imports (default: 1)
-let g:SimpylFold_fold_import = 1
-
-" Sometimes needed
-"autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-"autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
-
-" }
-
-" Nvim-R {
-
-" }
-
 " vimwiki {
 
 let wiki_1 = {}
@@ -1470,13 +1452,6 @@ let g:vimwiki_folding = 'expr'
 
 " Header numbering in html conversion
 let g:vimwiki_html_header_numbering = 2
-
-" }
-
-" riv {
-
-" This doesn't seem to have effect. Illegal mapping on mac?
-"let g:riv_global_leader = '<M-E>'
 
 " }
 
@@ -1579,34 +1554,6 @@ let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'b
 
 " }
 
-" plantuml-previewer {
-
-augroup plantuml-previewer
-  " Clear group
-  au!
-
-  " Binary path
-  " This may only work when plantuml installed through homebrew?
-  au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = get(
-      \  matchlist(system('cat `which plantuml` | grep plantuml.jar'), '\v.*\s[''"]?(\S+plantuml\.jar).*'),
-      \  1,
-      \  0
-      \)
-
-  " Open browser with preview
-  au FileType plantuml nnoremap <F9> :PlantumlOpen<CR>
-
-  " Close browser with preview
-  au FileType plantuml nnoremap <F8> :PlantumlClose<CR>
-
-  " Save file (default: png)
-  " To manually save file with another format/name do
-  " eg :PlantumlSave myspecialdiagram.svg
-  au FileType plantuml nnoremap <F10> :PlantumlSave<CR>
-
-augroup END
-
-" }
 
 " }
 

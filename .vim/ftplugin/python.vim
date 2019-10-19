@@ -21,6 +21,25 @@ packadd SimpylFold
 packadd jedi-vim
 packadd deoplete-jedi
 
+" SimpylFold {
+
+" Enable previewing of your folded classes' and functions' docstrings in the
+" fold text (default: 0)
+let b:SimpylFold_docstring_preview = 1
+
+" Fold docstrings (default: 1)
+"let b:SimpylFold_fold_docstring = 0
+
+" Fold imports (default: 1)
+let b:SimpylFold_fold_import = 1
+
+" Sometimes needed
+"autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
+"autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
+
+" }
+
+
 " TODO: NOT sure this is needed anymore?
 "" Python with virtualenv support
 "" Note that we need to discern between whether vim is built with python 2 or 3
