@@ -1,12 +1,12 @@
 " Modify generic settings
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set textwidth=79
-set expandtab
-set autoindent
-set fileformat=unix
-let python_highlight_all=1
+setlocal tabstop=4
+setlocal softtabstop=4
+setlocal shiftwidth=4
+setlocal textwidth=79
+setlocal expandtab
+setlocal autoindent
+setlocal fileformat=unix
+let b:python_highlight_all=1
 
 " Code folding options
 " Now using SimpylFold for folding python code
