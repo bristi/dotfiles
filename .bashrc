@@ -9,8 +9,48 @@
 # Normally suggested to put in .bash_login ?
 #set -x
 
+# Diagnose slow performance due to external system calls (run .bashrc)
+#strace -c -f ./script.sh
+
 # Some interesting unicode characters
 # Ϊ λ ❯ ❮ ♺ ✚ ⬆ ⬇ ✖ ✱ ➜ ✭ ◼
+
+# On Getting info on which OSX version/system we are on (besides checking $OSVERSION)
+#    Lør 08 Jun 17:52 [Brians-MBP]
+#    ~ λ echo "$OSTYPE"
+#    darwin18
+#    Lør 08 Jun 17:41 [Brians-MBP]
+#    ~ λ system_profiler SPSoftwareDataType
+#    Software:
+#
+#        System Software Overview:
+#
+#          System Version: macOS 10.14.5 (18F203)
+#          Kernel Version: Darwin 18.6.0
+#          Boot Volume: Macintosh HD
+#          Boot Mode: Normal
+#          Computer Name: Brians MacBook Pro
+#          User Name: Brian Stidsen (brian)
+#          Secure Virtual Memory: Enabled
+#          System Integrity Protection: Enabled
+#          Time since boot: 4 days 8:31
+#
+#    Lør 08 Jun 17:51 [Brians-MBP]
+#    ~ λ sw_vers 
+#    ProductName:	Mac OS X
+#    ProductVersion:	10.14.5
+#    BuildVersion:	18F203
+#    Lør 08 Jun 17:51 [Brians-MBP]
+#    ~ λ sw_vers -productName
+#    Mac OS X
+#    Lør 08 Jun 17:51 [Brians-MBP]
+#    ~ λ sw_vers -productVersion
+#    10.14.5
+#    Lør 08 Jun 17:51 [Brians-MBP]
+#    ~ λ sw_vers -buildVersion
+#    18F203
+
+DO_CUSTOM_PROFILING=0
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
@@ -20,25 +60,52 @@ fi
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
+  # Installed by brew
+  [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 fi
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Enable default programmable completion: ${duration} seconds"
 
 #
 # Non-standard/custom programmable completion
 #
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+
 # i-commands (iRODS)
 source ~/.bash_completions_custom/i-commands-auto.bash
 
-# Custom functions
-source ~/.bashrc_functions
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Enable custom programmable completion: ${duration} seconds"
 
-# Constants
+# Some info vars
+
+# Custom functions
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+source ~/.bashrc_functions
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Enable custom functions: ${duration} seconds"
+
+###
+### Constants
+###
+
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+
 #HELPER_TOOLS=~/opt/misc_helpers
+
+# See if we are on OSX and if so which version
+if [[ "$OSTYPE" == darwin* ]]; then
+    MYOSXVERSION=`sw_vers -productVersion`
+fi
+
+(( $DO_CUSTOM_PROFILING )) && echo "Getting/setting global constants: ${duration} seconds"
 
 ###
 ### General settings
@@ -239,9 +306,9 @@ path_no_conda () {
 
 ## Node
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 ## iRODS
@@ -253,6 +320,8 @@ export NVM_DIR="$HOME/.nvm"
 ###
 ### PATH
 ###
+
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
 
 # Add bin paths - order matters! ;)
 
@@ -267,8 +336,11 @@ source ~/.bashrc.local.paths
 
 # OSX specifics
 if [[ "$OSTYPE" == darwin* ]]; then
-    # Using homebrew package coreutils
+    # Using gnu versions of common utilities. Install packages coreutils and
+    # findutils using brew
+    # CAVEAT: Can be dangerous if applications expect the BSD/OSX versions?
     path_prepend /usr/local/opt/coreutils/libexec/gnubin
+    path_prepend /usr/local/opt/findutils/libexec/gnubin
 fi
 
 # Using anaconda
@@ -289,6 +361,9 @@ fi
 path_prepend ~/bin
 
 
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Setting paths: ${duration} seconds"
+
 ###
 ### Completion
 ###
@@ -303,7 +378,7 @@ path_prepend ~/bin
 
 
 ###
-### Aliases
+### Aliases / functions as aliases
 ###
 
 ## Note that it is sometimes better to make a shell script as aliases are
@@ -312,6 +387,7 @@ path_prepend ~/bin
 # Colors in terminal + related aliases
 if [ "$TERM" != "dumb" ]; then
     #eval "`dircolors -b`"
+    alias els='exa --group-directories-first --git --header --color=auto'
     alias ls='ls --group-directories-first --color=auto'
     #alias ls='ls -G'
     # To always send color ANSI codes
@@ -349,11 +425,33 @@ alias sshff='ssh -XC4c arcfour,blowfish-cbc'
 # Consider setting these globally instead.
 alias sortus='LC_NUMERIC="en_US.UTF8" LC_TIME="en_US.UTF8" sort'
 
+# Use neovim as default vim
+alias vim='nvim'
 # When updating vim plugins we don't want conda in path (vim was built with other python)
+# Note that if vim is set up to specifically use a defined python version, the following
+# alias is unnecessary (and only accounts for conda, meaning that pyenv and others may
+# still interfere)
 alias vimplugupdate='PATH=$(path_no_conda); vim +PlugInstall! +qall'
 
-# stuff
+# Asynchronously attach to tmux session (like default screen behaviour)
+# Note that the new session is killed when detached to keep clean env
+# Naming of new session (attached to original session) is <org name>-<uuid>
+# TODO: Naming should be <org name>-<capital letter starting from A denoting number of connecting session><uuid>
+# tans <name of session to attach to>
+tans () {
+    local NEW_SESSION="${1}-$(uuidgen)"
+    tmux new-session -t $1 -s $NEW_SESSION
+    tmux kill-session -t $NEW_SESSION
+}
+
+# Application conveniences
+alias docker-stop-running='docker stop $(docker ps -q)'
+
+# Random stuff
+# Sleep for 10 seconds
 alias zzz='sleep 10'
+# Get termial dimensions
+alias dim='echo $(tput cols)x$(tput lines)'
 
 # OSX specifics
 if [[ "$OSTYPE" == darwin* ]]; then
@@ -405,12 +503,14 @@ fi
 ###
 
 # applications
-export EDITOR=vim
+export EDITOR=nvim
 export PAGER=less
 #export BROWSER=/usr/bin/chromium
 export BROWSER=firefox
-export GIT_EDITOR=vim
-export GIT_PAGER=less
+# We use core.editor and core.pager in git instead. Note that GIT_PAGER
+# and GIT_EDITOR would take precence
+#export GIT_EDITOR=vim
+#export GIT_PAGER='less -FRX'
 
 
 ## locale settings
@@ -512,8 +612,13 @@ TIMESTAMP="\[\e[90m\]\D{%a %d %b %H:%M}"
 #PS1="\[\033[1;30m\](\D{%a %d %b %H:%M}) \[\033[1;33m\]\$(getgitstat) \$(getpyvenv)
 #\[\033[1;34m\]\W \[\033[1;32m\]\$ \[\033[m\]"
 
+#(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+# do some work
 PS1="${TIMESTAMP} [\h]${BYELLOW}\$(getgitstat)\$(getpyvenv)
 ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
+#(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+#echo "Setting PS1: $(($duration / 60)) minutes and $(($duration % 60)) seconds"
+#echo "Setting PS1: ${duration} seconds"
 
 ## This is a red prompt for use with root
 ##
@@ -522,6 +627,10 @@ ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 
 ## Hmm.. This page seems cool - perhaps use something from there:
 ## http://wiki.archlinux.org/index.php/Color_Bash_Prompt
+
+#### Other stuff
+
+
 
 # KDE wants to start in ~/Documents. Stupid KDE.
 #cd $HOME
@@ -533,6 +642,27 @@ ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 ## Prompt for use on servers with lousy prompt settings
 # PS1="\[\033[0;35m\]\u@\h\[\033[0;30m\]:\[\033[1;34m\]\W \[\033[1;32m\]\$ \[\033[m\]"
 
+
+### Window title
+
+# Also used for "Timing" mac application that logs time and needs to know
+# working folder from window title
+
+DISABLE_AUTO_TITLE="true"
+PROMPT_TITLE='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/#$HOME/~}\007"'
+export PROMPT_COMMAND="${PROMPT_TITLE}; ${PROMPT_COMMAND}"
+
+# This might be needed for iTerm (see https://timingapp.com/help/terminal)
+#if [ $ITERM_SESSION_ID ]; then
+#  DISABLE_AUTO_TITLE="true"
+#  echo -ne "\033]0; ${USER} @ ${HOSTNAME%% .* } : ${PWD/# $HOME/ ~} \007"
+#fi
+#
+#precmd() {
+#  echo -ne "\033]0; ${USER} @ ${HOSTNAME%% .* } : ${PWD/# $HOME/ ~} \007"
+#}
+
+## Initializations
 
 # Use autoenv
 # $ git clone git://github.com/kennethreitz/autoenv.git ~/.autoenv
@@ -556,3 +686,60 @@ ${CYAN}\W ${RET_VALUE}${PROMPT_SIGN}${COLOR_RESET} "
 #fi
 #unset __conda_setup
 ## <<< conda init <<<
+
+# Use nodenv (this manipulates PATH!)
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+if command -v nodenv 1>/dev/null 2>&1; then
+  eval "$(nodenv init -)"
+fi
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Activating nodenv: ${duration} seconds"
+
+
+# Use pyenv (this manipulates PATH!)
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Activating pyenv: ${duration} seconds"
+
+# This severely slows my terminal!!
+# And the plugin pyenv-virtualenv
+#(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+#if command -v pyenv-virtualenv-init 1> /dev/null 2>&1; then
+#  eval "$(pyenv virtualenv-init -)"
+#  export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+#fi
+#(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+#(( $DO_CUSTOM_PROFILING )) && echo "Activating pyenv-virtualenv: ${duration} seconds"
+
+# direnv
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+if command -v direnv 1>/dev/null 2>&1; then
+  eval "$(direnv hook bash)"
+fi
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Activating direnv: ${duration} seconds"
+
+# autojump
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Activating autojump: ${duration} seconds"
+
+# This seems necessary under Mojave for now
+# Specifically it is necessary because Xcode Command Line tools no longer
+# installs needed headers in /include.
+# See https://developer.apple.com/documentation/xcode_release_notes/xcode_10_release_notes
+# For issue on pyenv, see https://github.com/pyenv/pyenv/issues/1219
+# May also be needed for eg brew when building. Got make error:
+#   zipimport.ZipImportError: can't decompress data; zlib not available
+if [[ -n $MYOSXVERSION ]] && vercmp $MYOSXVERSION '>=' '10.14.0'; then
+    alias pyenv='CFLAGS="-I$(xcrun --show-sdk-path)/usr/include" pyenv'
+fi
+
+(( $DO_CUSTOM_PROFILING )) && SECONDS=0
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+(( $DO_CUSTOM_PROFILING )) && duration=$SECONDS
+(( $DO_CUSTOM_PROFILING )) && echo "Activating fzf: ${duration} seconds"

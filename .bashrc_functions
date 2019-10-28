@@ -90,6 +90,55 @@ path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
 
 
 ##
+## Utils
+##
+
+# Compare versions, eg 1.15.1 and 1.8.3
+# Adapted from https://stackoverflow.com/a/44660519
+# Compares two tuple-based, dot-delimited version numbers a and b (possibly
+# with arbitrary string suffixes). Returns:
+# 1 if a<b
+# 2 if equal
+# 3 if a>b
+# Everything after the first character not in [0-9.] is compared
+# lexicographically using ASCII ordering if the tuple-based versions are equal.
+version_compare() {
+    if [[ $1 == $2 ]]; then
+        return 2
+    fi
+    local IFS=.
+    local i a=(${1%%[^0-9.]*}) b=(${2%%[^0-9.]*})
+    local arem=${1#${1%%[^0-9.]*}} brem=${2#${2%%[^0-9.]*}}
+    for ((i=0; i<${#a[@]} || i<${#b[@]}; i++)); do
+        if ((10#${a[i]:-0} < 10#${b[i]:-0})); then
+            return 1
+        elif ((10#${a[i]:-0} > 10#${b[i]:-0})); then
+            return 3
+        fi
+    done
+    if [ "$arem" '<' "$brem" ]; then
+        return 1
+    elif [ "$arem" '>' "$brem" ]; then
+        return 3
+    fi
+    return 2
+}
+
+# Ease of use
+# Usage: vercmp versionstring1 operator versionstring2
+# Eg vercmp '1.15.1' '<=' '1.8rc  # (would fail)
+vercmp () {
+    version_compare $1 $3
+    case $? in
+      1) op='<';;
+      2) op='=';;
+      3) op='>';;
+    esac
+    [[ $2 =~ $op ]] && return 0 || return 1
+}
+
+
+##
 ## Git info for prompt (PS1)
 ##
 
@@ -159,9 +208,13 @@ getgitstat()
 getpyvenv()
 {
     if test -n "$VIRTUAL_ENV" ; then
-        echo " (pyenv:`basename \"$VIRTUAL_ENV\"`)"
+        echo " (pyvenv:`basename \"$VIRTUAL_ENV\"`)"
     elif test -n "$CONDA_PREFIX" ; then
-        echo " (pyenv:`basename \"$CONDA_PREFIX\"`)"
+        echo " (condaenv:`basename \"$CONDA_PREFIX\"`)"
+    elif test -n "$PYENV_SHELL" ; then
+        # TODO: This may have to be adapted if enabling pyenv-virtualenv
+        PYENV_NAME="$(pyenv version-name)"
+        echo " (pyenv:`basename \"$PYENV_NAME\"`)"
     else
         echo ""
     fi
