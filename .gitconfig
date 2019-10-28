@@ -3,7 +3,17 @@
   autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space
   excludesfile = ~/.gitignore_global
-  editor = vim
+  # Use less with -FRX to quit if output less than one screen
+  # It is also possible to use
+  # * git --no-pager <cmd>
+  # * git --add-pager <cmd>
+  # Note that GIT_PAGER would take precedence if set!
+  # Note that to deactivate eg -F option from environment use -+F
+  # Note that git would normally also use -S to truncate long lines
+  # Note that in shell we could eg GIT_PAGER='less -RFXS' git br
+  pager = less -FRX
+  # Note that GIT_EDITOR would take precedence if set!
+  editor = nvim
 [apply]
   whitespace = fix
 #[url "https://"]
@@ -34,6 +44,14 @@
   lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
   # Commits since last work day - daily standup
   standup = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last friday; else echo yesterday; fi)"
+  ##
+  ## Recover dangling commits, dropped stashes, ...
+  ## (of course, check reflog if loss happened recently)
+  ## Note that these aliases are intentionally annoyingly long
+  # All (recoverable) commits
+  # ~ https://stackoverflow.com/a/6455586
+  recov-log-all = log --graph --decorate --pretty=oneline --abbrev-commit --all $(git fsck --no-reflogs | grep commit | cut -d' ' -f3)
+
   ## Modify working tree / index
   # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
   unadd = rm --cached --
@@ -48,8 +66,14 @@
   uncommit = reset --soft HEAD^1 --
   # Discard changes to file(s) in working tree
   unmodify = checkout --
+  # Unmerge, if MERGE_HEAD exist. Otherwise use git reset --merge (older and more general).
+  unmerge = merge --abort
   ## Other stuff
+  # List tracked files
   ls = ls-files
+  # List untracked, and not ignored, files
+  uls = ls-files --others --exclude-standard
+  # Some quickies
   d = difftool
   pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
   fp = fetch --all --prune
@@ -79,6 +103,13 @@
   # Following may require explicit branch, eg origin/develop. And remember to fetch first..
   originlogdiff = log HEAD..origin
   origindiff = diff HEAD...origin
+  ## Provider (gitlab/github/..) specifics
+  # A gitlab merge request as local branch
+  # eg. `git glmr origin 42` will create and checkout branch (with merge request 42) 'mr-origin-42'
+  glmr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
+  # A github pull request as local branch
+  # eg. `git ghpr origin 42` will create and checkout branch (with pull request 42) 'pr-origin-42'
+  ghpr = !sh -c 'git fetch $1 pull/$2/head:pr-$1-$2 && git checkout pr-$1-$2' -
 [color]
   ui = auto
   #diff = auto
@@ -117,6 +148,8 @@
   # eg %C(bold yellow)
   # Note that to get default color output for placeholder, eg differentiated colors for %d, use %C(auto)
   #
+  # One line, with date
+  onelinem = format:%C(auto,yellow)%h %C(auto,blue)%>(21,trunc)%ai%C(auto)%d
   # One line, with short hash, gpg, date, author and subject
   onelineg = format:%C(auto,yellow)%h %C(auto,magenta)%G? %C(auto,blue)%>(12,trunc)%ad %C(auto,cyan)%<(7,trunc)%aN%C(auto,reset)%s%C(auto)%d
   # One line, with short hash, rel date, author and subject
@@ -125,3 +158,11 @@
   #twoline = format:%C(yellow)%h%Creset %s%n        %Cblue[%ad] %ar by %an <%ae>
   twoline = format:%C(yellow)%h %C(auto,magenta)%G? %Creset%s%C(auto)%d%n  %Cblue[%ad] %ar %C(cyan)%an <%ae>
   threeline = format:%C(yellow)%h %C(auto,magenta)%G? %Creset%s%C(auto)%d%n  %Cblue[%ad] %ar %C(cyan)%an <%ae>%n
+[pager]
+  # Always pager for branch
+  #branch = false
+  # Add -S (truncate long lines) to branch
+  # * The -E (QUIT-AT-EOF) because adding -S made less wait so that user
+  #   has chance to see truncated text (override -F?)
+  branch = less -FRXSE
+  log = less -FRXS
