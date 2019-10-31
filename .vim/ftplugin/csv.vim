@@ -1,1 +1,1 @@
-packadd csv
+packadd csv.vim

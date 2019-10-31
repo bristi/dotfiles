@@ -459,9 +459,9 @@ function! PackInit() abort
     " Plantuml
     " Previewing
     call minpac#add('weirongxu/plantuml-previewer.vim', {'type': 'opt'})
-    " Syntax - isn't this built-in?? Note that first line has to contain
-    " with @startuml
-    call minpac#add('aklt/plantuml-syntax', {'type': 'opt'})
+    " Syntax - and setting correct filetype based on filename extension or
+    " first line of file contain @startuml, hence plugin not optional
+    call minpac#add('aklt/plantuml-syntax')
 
   " }
 
@@ -513,6 +513,9 @@ set hlsearch
 " Eg set linebreak ; set breakat = "  !@*-+;:,./?" (defaults for breakat)
 " Note: linebreak does not work with list (so set nolist)
 set wrap
+
+" Use vertical column to indicate max width
+set colorcolumn=80
 
 " Using , instead of \ as leader.
 " Motivation: , is always followed by a space or a letter, thus no annoyance
@@ -931,6 +934,14 @@ nmap <C-Left> :cprev<CR>
 " Or perhaps collecting in functions
 
 " NOTE: Most of this is done in scripts under .vim/ftplugin
+
+" Setting filetypes based on filename extension {
+"augroup filetypedetect
+"  au!
+"  " We use plantuml-syntax plugin for this
+"  au BufRead,BufNewFile *.puml, *.uml, *.plantuml setlocal ft=plantuml
+"augroup END
+" }
 
 " Web {
 au BufNewFile,BufRead *.js, *.html, *.css

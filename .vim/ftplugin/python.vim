@@ -14,8 +14,9 @@ let b:python_highlight_all=1
 "au FileType python set foldnestmax=2
 
 " Load packages (that were installed under opt)
+":echomsg "Loading python packages"
 "packadd python-mode
-packadd indentpython
+packadd indentpython.vim
 packadd vim-flake8
 packadd SimpylFold
 packadd jedi-vim

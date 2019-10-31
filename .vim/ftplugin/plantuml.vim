@@ -1,9 +1,12 @@
-packadd plantuml-previewer
-packadd plantuml-syntax
+packadd plantuml-previewer.vim
+" We also use the plantuml-syntax plugin to set filetype for relevant
+" filename extensions, so it is not an optional plugin (and thus already
+" loaded)
+" packadd plantuml-syntax.vim
 
 " Binary path
 " This may only work when plantuml installed through homebrew?
-let b:plantuml_previewer#plantuml_jar_path = get(
+let g:plantuml_previewer#plantuml_jar_path = get(
     \  matchlist(system('cat `which plantuml` | grep plantuml.jar'), '\v.*\s[''"]?(\S+plantuml\.jar).*'),
     \  1,
     \  0
