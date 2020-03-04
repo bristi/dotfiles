@@ -1,1 +1,2 @@
-packadd csv.vim
+"packadd csv.vim
+packadd rainbow_csv

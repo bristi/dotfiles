@@ -231,6 +231,10 @@ function! PackInit() abort
     " Undo tree
     call minpac#add('sjl/gundo.vim')
 
+    " Rainbow colors for parantheses, brackets, elipses
+    " Note that this is a fork of 'oblitum/rainbow'
+    call minpac#add('frazrepo/vim-rainbow')
+
     " Directory specific vim settings
     " Settings in file '.vimdir'. Always use setlocal.
     " See https://www.vim.org/scripts/script.php?script_id=1860
@@ -244,7 +248,7 @@ function! PackInit() abort
     "D call minpac#add('godlygeek/tabular')
 
     " Increment/decrement dates, times and more with CTRL-A/CTRL-X
-    "D call minpac#add('tpope/vim-speeddating')
+    call minpac#add('tpope/vim-speeddating')
 
     " Calendar
     "D call minpac#add('mattn/calendar-vim')
@@ -363,7 +367,8 @@ function! PackInit() abort
   " filetype is in buffer
 
   " Ordered text files {
-    call minpac#add('vim-scripts/csv.vim', {'type': 'opt'})
+    "call minpac#add('vim-scripts/csv.vim', {'type': 'opt'})
+    call minpac#add('mechatroner/rainbow_csv', {'type': 'opt'})
     call minpac#add('elzr/vim-json', {'type': 'opt'})
   " }
 
@@ -454,7 +459,7 @@ function! PackInit() abort
     " * https://github.com/gu-fan/riv.vim/blob/master/doc/riv_instruction.rst
     " * https://github.com/gu-fan/InstantRst
     "call minpac#add('Rykka/riv.vim', {'type': 'opt'})
-    call minpac#add('gu-fan/riv.vim', {'type': 'opt'})
+    "call minpac#add('gu-fan/riv.vim', {'type': 'opt'})
 
     " Plantuml
     " Previewing
@@ -470,8 +475,10 @@ function! PackInit() abort
   " Color scheme, status line, .. {
 
     " Color scheme
-    call minpac#add('altercation/vim-colors-solarized')
-    call minpac#add('jnurmine/Zenburn')
+    " call minpac#add('altercation/vim-colors-solarized')
+    " call minpac#add('jnurmine/Zenburn')
+    call minpac#add('morhetz/gruvbox')
+
 
     " Highlight current line, depending on colors from theme
     " Not usable (except for line number column) when using colorscheme?
@@ -545,7 +552,7 @@ set shiftwidth=4
 set tabstop=4
 set softtabstop=4       " not really necessary with smarttab set
 set smarttab
-set expandtab
+set expandtab           " Spaces instead of tabs
 set autoindent          " always set autoindenting on
 "au FileType coffee,javascript,xml,xhtml,html,htmldjango,haml,tex set shiftwidth=2
 
@@ -721,7 +728,15 @@ set background=dark
 "colorscheme solarized
 
 " zenburn
-colorscheme zenburn
+" colorscheme zenburn
+
+"
+" gruvbox
+"
+" Is termguicolors / italics necessary?
+set termguicolors
+let g:gruvbox_italic=1
+colorscheme gruvbox
 
 " Need this line here for match to work but also put in
 " color theme as it clears highlights..
@@ -807,6 +822,9 @@ inoremap ½ <Esc>
 " Apparently having issues remapping CR and backspace on OSX
 " This is great since it's where I need it the most (touch bar)
 "inoremap <S-CR> <ESC>
+
+" Make sure we can still easily write tabs, even with expandtab on
+inoremap <S-Tab> <C-V><Tab>
 
 " select the text just last pasted or edited :)
 nnoremap gp `[v`]
@@ -1565,6 +1583,20 @@ let g:rootmarkers = ['.projectroot', '.git', '.hg', '.svn', '.bzr', '_darcs', 'b
 
 " }
 
+" vim-rainbow {
+
+" :RainbowToggle  --you can use it to toggle this plugin.
+" :RainbowLoad    --you can use it to load/reload this plugin.
+
+" Enable for filetypes (put in filetype files ...)
+" au FileType c,cpp,objc,objcpp call rainbow#load()
+" Enable globally
+let g:rainbow_active = 1
+
+" It is possible to select which parantheses to color and how, see
+" plugin page
+
+  " }
 
 " }
 
