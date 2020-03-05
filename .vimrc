@@ -306,6 +306,9 @@ function! PackInit() abort
 
   " Snippets {
     "call minpac#add('SirVer/ultisnips' | call minpac#add('honza/vim-snippets'))
+
+    call minpac#add('Shougo/neosnippet.vim')
+    call minpac#add('Shougo/neosnippet-snippets')
   " }
 
   " Completion {
@@ -342,6 +345,8 @@ function! PackInit() abort
       call minpac#add('roxma/nvim-yarp')
       call minpac#add('roxma/vim-hug-neovim-rpc')
     endif
+    " deoplete show signature
+    call minpac#add('Shougo/echodoc.vim')
   " }
 
   " tmux {

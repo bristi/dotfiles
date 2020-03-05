@@ -19,3 +19,18 @@ augroup end
 " Open preview window at bottom instead of top
 set splitbelow
 
+" Tab autocompletion (also for neosnippets)
+function! s:check_back_space() abort "{{{
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction"}}}
+imap <silent><expr><TAB>
+     \ neosnippet#expandable_or_jumpable() ?
+     \   "\<Plug>(neosnippet_expand_or_jump)" :
+     \ pumvisible() ? "\<C-n>" :
+     \ <SID>check_back_space() ? "\<TAB>" :
+     \ deoplete#mappings#manual_complete()
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ deoplete#manual_complete()
