@@ -217,10 +217,13 @@ function! PackInit() abort
   " General {
     "call minpac#add('tpope/vim-sensible')
 
+    " Manage vim sessions
+    call minpac#add('tpope/vim-obsession')
+
     " File tree
     call minpac#add('scrooloose/nerdtree', { 'on':  'NERDTreeToggle' })
 
-    " Linting
+    " Linting/fixing
     " call minpac#add('scrooloose/syntastic')
     " TODO: Configure ale
     call minpac#add('w0rp/ale')
@@ -777,6 +780,21 @@ set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.fdb_latexmk,.lof,.lot,.lo
 
 " { Status line
 
+" TODO: This requires ale. Provide alternative in relevant plugin config
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? 'OK' : printf(
+    \   '%dW %dE',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
+
 "" Fancy status line
 "set statusline=%<%f\ %m%r%h%w\ \ \ [%{&ff}/%Y,%{(&fenc==\"\"?&enc:&fenc)}]\ [%b,0x%B]%=\ %-14(%l,%c%V%)\ %p%%\ [%Ll]
 " Added fugitive flag
@@ -797,6 +815,8 @@ set statusline+=%=
 "set statusline+=\ %{fugitive#statusline()}
 "set statusline+=\ [%{fugitive#head(5)}]
 set statusline+=\ %{fugitive#head(5)}
+" Linter errors / warnings
+set statusline+=\ %{LinterStatus()}
 " line number, column number AND virtual column number
 "set statusline+=\ %-14(%l,%c%V%)
 " column number AND virtual column number
@@ -805,6 +825,9 @@ set statusline+=\ %c%V
 set statusline+=\ %p%%
 " Number of lines in file
 set statusline+=\ %Ll
+" Current vim session
+" TODO: This requires vim-obsession. Create proper default.
+set statusline+=\ %{ObsessionStatus()}
 
 " Make status line second last - may be removed by setting to 0
 " Also necessary for fancy status lines

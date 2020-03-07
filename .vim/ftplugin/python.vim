@@ -40,6 +40,11 @@ let b:SimpylFold_fold_import = 1
 
 " }
 
+" Ale {
+
+
+" }
+
 
 " TODO: NOT sure this is needed anymore?
 "" Python with virtualenv support
