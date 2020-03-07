@@ -2,7 +2,7 @@
 [core]
   autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space
-  excludesfile = ~/.gitignore_global
+	excludesfile = /Users/brian/.gitignore_global
   # Use less with -FRX to quit if output less than one screen
   # It is also possible to use
   # * git --no-pager <cmd>

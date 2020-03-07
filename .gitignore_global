@@ -1,0 +1,167 @@
+# A global-ish gitignore
+# Not necessarily a good idea, since one tend to forget that team members
+# does not have access to same ignore rules. Also, one tend to overlook
+# items one didn't remember we ignored globally ...
+
+#
+# OS/ Language / App specifics
+#
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# VIM
+[._]*.sw[a-p]
+[._]sw[a-p]
+Session.vim
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+.Python
+develop-eggs/
+eggs/
+.eggs/
+parts/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+*.egg
+
+# C / C++
+*.so
+
+# Node / NPM
+node_modules/
+npm-debug.log
+
+# JetBrains IDEs
+.idea/
+
+# VM managers
+.vagrant/
+
+#
+# Binaries
+#
+
+# JPEG
+*.jpg
+*.jpeg
+*.jpe
+*.jif
+*.jfif
+*.jfi
+
+# JPEG 2000
+*.jp2
+*.j2k
+*.jpf
+*.jpx
+*.jpm
+*.mj2
+
+# JPEG XR
+*.jxr
+*.hdp
+*.wdp
+
+# Graphics Interchange Format
+*.gif
+
+# RAW
+*.raw
+
+# Web P
+*.webp
+
+# Portable Network Graphics
+*.png
+
+# Animated Portable Network Graphics
+*.apng
+
+# Multiple-image Network Graphics
+*.mng
+
+# Tagged Image File Format
+*.tiff
+*.tif
+
+# Scalable Vector Graphics
+*.svg
+*.svgz
+
+# Portable Document Format
+*.pdf
+
+# X BitMap
+*.xbm
+
+# BMP
+*.bmp
+*.dib
+
+# ICO
+*.ico
+
+# 3D Images
+*.3dm
+*.max
+
+#
+# General stuff
+#
+
+scratch/
+bak/
+results/
+downloads/
+lib/
+lib64/
+var/
+build/
+_build/
+target/
+_target/
+dist/
+sdist/
+out/
+
+Thumbs.db
+tags
+ctags
+
+*.bak
+*.tmp
+*.orig
+*.patch
+*.diff
+*.log
