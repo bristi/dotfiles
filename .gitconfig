@@ -27,7 +27,6 @@
   st = status
   ap = add -p
   g = grep -I
-  # lg = log -p
   # List tracked files
   ls = ls-files
   # List untracked, and not ignored, files
@@ -53,7 +52,11 @@
   # More info per commit
   lol = log --graph --pretty=threeline --date=short
   # For all branches, with more info per commit
-  lols = log --graph --pretty=threeline --date=short --all
+  lola = log --graph --pretty=threeline --date=short --all
+  # Even more info per commit (amount of changes per file)
+  lols = log --graph --pretty=threeline --date=short --stat
+  # Entire diff per commit
+  lold = log --pretty=threeline -p
   # Full commit messages with detailed info
   lolol = log --graph --decorate --pretty=fuller --abbrev-commit --name-status --find-renames
   lolola = log --graph --decorate --pretty=fuller --abbrev-commit --name-status --find-renames --all
