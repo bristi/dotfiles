@@ -22,28 +22,49 @@
   br = branch -avv
   bra = !"echo 'Known branches:' && git br && echo 'Local branches merged to current branch:' && git branch --merged && echo 'Local branches NOT merged to current branch:' && git branch --no-merged"
   #ci = commit
-  #co = checkout
-  #df = diff
+  co = checkout
+  df = diff
+  st = status
+  ap = add -p
   g = grep -I
-  lg = log -p
-  ## Commit history
-  # Just decorated commits for all branches - see relationships between branches/tags
-  l = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
+  # lg = log -p
+  # List tracked files
+  ls = ls-files
+  # List untracked, and not ignored, files
+  uls = ls-files --others --exclude-standard
+  # Some quickies
+  d = difftool
+  pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
+  fp = fetch --all --prune
+  #fr = !"git fetch && git rebase -i origin/master"
+  #pr = git pull --rebase
+  #rb = rbranch
+  #rv = review
+
+  ## Logs and Commit history
   # Pretty short log with graph
-  lol = log --graph --pretty=onelinec --date=short
-  # More info per commit
-  lols = log --graph --pretty=threeline --date=short
+  l = log --graph --pretty=onelinec --date=short
   # Prettier / first Parent. For just merges done to branch - avoid feature branch commit clutter
-  lolp = log --graph --pretty=onelinec --date=short --first-parent
+  lp = log --graph --pretty=onelinec --date=short --first-parent
   # For all branches
-  lola = log --graph --pretty=onelinec --date=short --all
+  la = log --graph --pretty=onelinec --date=short --all
+  # Just decorated commits for all branches - see relationships between branches/tags
+  ll = log --graph --pretty=onelinec --date=short --simplify-by-decoration --all
+  # More info per commit
+  lol = log --graph --pretty=threeline --date=short
   # For all branches, with more info per commit
-  lolsa = log --graph --pretty=threeline --date=short --all
+  lols = log --graph --pretty=threeline --date=short --all
   # Full commit messages with detailed info
-  lolol = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames
-  lolola = log --graph --decorate --pretty=full --abbrev-commit --name-status --find-renames --all
+  lolol = log --graph --decorate --pretty=fuller --abbrev-commit --name-status --find-renames
+  lolola = log --graph --decorate --pretty=fuller --abbrev-commit --name-status --find-renames --all
+  # List of stashes with date and time
+  # Note: output flags are same as for log, so see options there
+  stal = stash list --pretty=oneline --date=default --abbrev-commit
   # Commits since last work day - daily standup
   standup = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last friday; else echo yesterday; fi)"
+  #standup3 = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since=$(if [[ Mon == $(date +%a) ]]; then echo last wednesday; else echo \\"3 days ago\\"; fi)"
+  # Eg git standupx "2 weeks ago"
+  standupx = !"git log --all --no-merges --graph --date=short --pretty=onelinec --since "
   ##
   ## Recover dangling commits, dropped stashes, ...
   ## (of course, check reflog if loss happened recently)
@@ -51,6 +72,17 @@
   # All (recoverable) commits
   # ~ https://stackoverflow.com/a/6455586
   recov-log-all = log --graph --decorate --pretty=oneline --abbrev-commit --all $(git fsck --no-reflogs | grep commit | cut -d' ' -f3)
+
+  ## Logs/history for individual files
+  # History for single file
+  hf = log --follow -p --
+  # All commits that has changed a file - over all branches, reflog and stashes
+  # Also works with gitk (consider also using flag --author-date-order)
+  cf = log --all --first-parent --remotes --reflog --
+  # Same, but as short list
+  cfl = log --graph --pretty=onelinec --date=short --all --first-parent --remotes --reflog --
+  # Diffs for file in all commits that has changed file - over all branches, reflog and stashes
+  cfp = log --all --first-parent --remotes --reflog -p --
 
   ## Modify working tree / index
   # Unstage file(s) and remove(!) from index. Leave file(s) in working tree alone.
@@ -68,28 +100,8 @@
   unmodify = checkout --
   # Unmerge, if MERGE_HEAD exist. Otherwise use git reset --merge (older and more general).
   unmerge = merge --abort
+
   ## Other stuff
-  # List tracked files
-  ls = ls-files
-  # List untracked, and not ignored, files
-  uls = ls-files --others --exclude-standard
-  # Some quickies
-  d = difftool
-  pp = !"echo 'Pull'; git pull && echo 'Push'; git push"
-  fp = fetch --all --prune
-  #fr = !"git fetch && git rebase -i origin/master"
-  #rb = rbranch
-  #rv = review
-  st = status
-  # History for single file
-  hf = log --follow -p --
-  # All commits that has changed a file - over all branches, reflog and stashes
-  # Also works with gitk (consider also using flag --author-date-order)
-  cf = log --all --first-parent --remotes --reflog --
-  # Same, but as short list
-  cfl = log --graph --pretty=onelinec --date=short --all --first-parent --remotes --reflog --
-  # Diffs for file in all commits that has changed file - over all branches, reflog and stashes
-  cfp = log --all --first-parent --remotes --reflog -p --
   # Housekeeping pointers
   housekeep = !"echo 'Local and remote branches (Remember to sync from origin `git fetch --all --prune`):'; git branch -a && echo 'Branches already merged with HEAD:'; git branch --merged"
   ## Some info
