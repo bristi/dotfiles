@@ -20,10 +20,12 @@
 #  insteadOf = git://
 [alias]
   br = branch -avv
+  brg = !"git br | grep --color=always ': gone]'"
   bra = !"echo 'Known branches:' && git br && echo 'Local branches merged to current branch:' && git branch --merged && echo 'Local branches NOT merged to current branch:' && git branch --no-merged"
   #ci = commit
   co = checkout
   df = diff
+  ds = diff --staged
   st = status
   ap = add -p
   g = grep -I
