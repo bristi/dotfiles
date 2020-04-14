@@ -1,0 +1,14 @@
+default_hour: 9
+default_minute: 0
+editor: 'vim'
+encrypt: true
+highlight: true
+indent_character: '|'
+journals:
+  default: /Users/brian/Dropbox/journal/journal.txt
+  work: /Users/brian/Dropbox/journal/journal-work.txt
+linewrap: 79
+tagsymbols: '@'
+template: false
+timeformat: '%Y-%m-%d %H:%M'
+version: v2.2
