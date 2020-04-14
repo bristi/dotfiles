@@ -1015,6 +1015,8 @@ nmap ,ln :set invnumber<CR>
 "   vimwiki search uses error list
 nmap <C-Right> :cnext<CR>
 nmap <C-Left> :cprev<CR>
+nmap <C-J> :cnext<CR>
+nmap <C-K> :cprev<CR>
 
 "" Next/previous item and open/close quickfix
 " cn   Next item
