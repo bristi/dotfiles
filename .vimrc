@@ -858,6 +858,39 @@ inoremap <S-Tab> <C-V><Tab>
 nnoremap gp `[v`]
 nnoremap <expr> gV    "`[".getregtype(v:register)[0]."`]"
 
+function! PastePrep()
+    :set syntax=off
+    :set noswapfile
+    :set paste
+    :let b:paste_prepped=1
+    :echo "Prepped for pasting!"
+endfunction
+
+function! PasteUnPrep()
+    :set syntax=on
+    :set swapfile
+    :set nopaste
+    :let b:paste_prepped=0
+    :echo "Pasting unprepped.."
+endfunction
+
+function! TogglePastePrep()
+    if b:paste_prepped
+      :call PasteUnPrep()
+    else
+      :call PastePrep()
+    endif
+endfunction
+
+" Default prepped
+let b:paste_prepped=0
+" Toggle paste prepping
+nnoremap <leader>pt :call TogglePastePrep()<CR>
+" Paste from clipboard
+" Note that we turn off syntax highlighting and swap in case lots of text
+" is being pasted
+"nnoremap <leader>pc :set syntax=off<CR>:set noswapfile<CR>:set paste<CR>"+p<CR>:set swapfile<CR>:set syntax=on<CR>:set nopaste<CR>:echo "Pasted from clipboard"<CR>
+nnoremap <leader>pc :call PastePrep()<CR>"+p<CR>:call PasteUnPrep()<CR>:echo "Pasted from clipboard"<CR>
 
 " Toggle textwidth (automatically wrap / break line at given character count
 function! ToggleTextwidth()
