@@ -21,6 +21,12 @@
 # # This last command creates the file ~/.config/fish/functions/rmi.fish
 # # Read more in doc: https://fishshell.com/docs/current/commands.html#alias
 
+# Remove certain items from history
+function ignorehistory --on-event fish_prompt # or maybe fish_preexec, see function --help
+    # This doesn't work. Could just use them in prefix as with jrnl instead?
+    #history --delete fg bg
+    history delete --prefix jrnl jrnw jrnp
+end
 
 # Aliases
 
@@ -92,3 +98,4 @@ source (rbenv init - | psub)
 
 # goenv
 source (goenv init - | psub)
+set -g fish_user_paths "/usr/local/opt/libpq/bin" $fish_user_paths
