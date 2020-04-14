@@ -858,6 +858,20 @@ inoremap <S-Tab> <C-V><Tab>
 nnoremap gp `[v`]
 nnoremap <expr> gV    "`[".getregtype(v:register)[0]."`]"
 
+
+" Toggle textwidth (automatically wrap / break line at given character count
+function! ToggleTextwidth()
+    if &textwidth
+      :set textwidth=0
+      :echo "Option textwidth toggled off"
+    else
+      :set textwidth=79
+      :echo "Option textwidth set to 79"
+    endif
+endfunction
+nnoremap <leader>tw :call ToggleTextwidth()<CR>
+
+
 " search for declaration of subroutine/function under cursor
 "http://www.rayninfo.co.uk/vimtips.html
 "nmap gx yiw/^\(sub\<bar>def\<bar>function\)\s\+<C-R>"<CR>
