@@ -932,6 +932,20 @@ nnoremap <Leader>tpt "=strftime("%a %b %d, %Y  %H:%M")<CR>P
 "inoremap <Leader>tt <C-R>=strftime("%a %b %d, %Y  %H:%M%p")<CR>
 "nnoremap <Leader>tt "=strftime("%a %b %d, %Y  %H:%M%p")<CR>P
 
+" Working with diffs
+" Note the standard shortcuts:
+"   do - Get changes from other window into the current window
+"   dp - Put the changes from current window into the other window
+"   ]c - Jump to the next change
+"   [c - Jump to the previous change
+" Fugitive Conflict Resolution
+" When using 3-way merge diff through fugitive buffers for old and merge
+" have \\2 and \\3 appended to their names. Get to and from those with these
+" mappings (h and l to mimic vim left and right):
+nnoremap <leader>dds :Gvdiffsplit<CR>
+nnoremap <leader>ddh :diffget //2<CR>
+nnoremap <leader>ddl :diffget //3<CR>
+
 """ Command to see differences from buffer and saved file
 """ ("What did I just change?")
 """ From vimrc_example.vim
