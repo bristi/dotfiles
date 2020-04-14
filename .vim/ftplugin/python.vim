@@ -16,9 +16,11 @@ let b:python_highlight_all=1
 " Load packages (that were installed under opt)
 ":echomsg "Loading python packages"
 "packadd python-mode
-packadd indentpython.vim
-packadd vim-flake8
+"packadd indentpython.vim
+packadd vim-python-pep8-indent
+"packadd vim-flake8
 packadd SimpylFold
+packadd semshi
 packadd jedi-vim
 packadd deoplete-jedi
 
@@ -42,9 +44,20 @@ let b:SimpylFold_fold_import = 1
 
 " Ale {
 
+" Check Python files with flake8 and pylint.
+let b:ale_linters = ['flake8', 'pylint']
+" Fix Python files with autopep8 and yapf.
+let b:ale_fixers = ['autopep8', 'yapf']
 
 " }
 
+" Semshi {
+" Don't know why filetype doesn't trigger but have same issue w csv files??
+" Perhaps same issue as w deoplete, look into it later..
+Semshi enable
+
+
+" }
 
 " TODO: NOT sure this is needed anymore?
 "" Python with virtualenv support

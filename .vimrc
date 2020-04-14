@@ -396,12 +396,15 @@ function! PackInit() abort
 
   " Python {
     " call minpac#add('klen/python-mode', {'type': 'opt'})
-    call minpac#add('vim-scripts/indentpython.vim', {'type': 'opt'})
-    call minpac#add('nvie/vim-flake8', {'type': 'opt'})
+    "call minpac#add('vim-scripts/indentpython.vim', {'type': 'opt'})
+    call minpac#add('Vimjas/vim-python-pep8-indent', {'type': 'opt'})
+    "call minpac#add('nvie/vim-flake8', {'type': 'opt'})
     call minpac#add('tmhedberg/SimpylFold', {'type': 'opt'})
     " jedi-vim - remember to `pip install jedi` in relevant python env
     call minpac#add('davidhalter/jedi-vim', {'type': 'opt', 'do': 'pip install jedi' })
     call minpac#add('zchee/deoplete-jedi', {'type': 'opt'})
+    " For syntax highlighting
+    call minpac#add('numirias/semshi', {'type': 'opt'})
   " }
 
   " JavaScript {

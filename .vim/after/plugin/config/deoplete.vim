@@ -6,6 +6,9 @@ endif
 " Disable autocompletion
 " let g:deoplete#disable_auto_complete = 1
 
+" Delay autocompletion just a bit
+let g:deoplete#auto_complete_delay = 100
+
 " Close window with completion signature after completion
 " is complete
 augroup myaug-deoplete
@@ -14,7 +17,7 @@ augroup myaug-deoplete
 augroup end
 
 " Show maximally this many completion candidates (default: 500)
-"call deoplete#custom#option('max_list', 13)
+call deoplete#custom#option('max_list', 42)
 
 " Open preview window at bottom instead of top
 set splitbelow
