@@ -472,6 +472,9 @@ function! PackInit() abort
     "call minpac#add('Rykka/riv.vim', {'type': 'opt'})
     "call minpac#add('gu-fan/riv.vim', {'type': 'opt'})
 
+    " Asciidoc(tor)
+    call minpac#add('habamax/vim-asciidoctor', {'type': 'opt'})
+
     " Plantuml
     " Previewing
     call minpac#add('weirongxu/plantuml-previewer.vim', {'type': 'opt'})
