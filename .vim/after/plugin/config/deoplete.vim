@@ -7,7 +7,8 @@ endif
 " let g:deoplete#disable_auto_complete = 1
 
 " Delay autocompletion just a bit
-let g:deoplete#auto_complete_delay = 100
+"let g:deoplete#auto_complete_delay = 100
+call deoplete#custom#option('auto_complete_delay', 100)
 
 " Close window with completion signature after completion
 " is complete
